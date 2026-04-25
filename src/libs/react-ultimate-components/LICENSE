@@ -1,0 +1,43 @@
+LICENÇA PROPRIETÁRIA PS CODE
+Versão 1.0 – Novembro de 2025
+
+Copyright (c) 2025 PS Code.
+Todos os direitos reservados.
+
+Este software e arquivos associados (“Software”) são licenciados, e não vendidos, ao adquirente (“Licenciado”) para uso sob os termos desta Licença.
+
+1. CONCESSÃO DE LICENÇA
+A PS Code concede ao Licenciado uma licença perpétua, não exclusiva e intransferível para:
+  - Utilizar o Software em projetos pessoais e comerciais.
+  - Modificar o Software para uso interno em projetos do próprio Licenciado.
+  - Integrar o Software em aplicações, sites ou sistemas finais entregues a usuários finais, desde que não seja possível extrair os componentes como biblioteca independente.
+
+2. RESTRIÇÕES
+O Licenciado NÃO pode, sob nenhuma circunstância:
+  - Distribuir, compartilhar, vender, sublicenciar, alugar, publicar ou disponibilizar o Software a terceiros em forma de código-fonte.
+  - Tornar o Software acessível em qualquer repositório público ou privado que não seja de uso exclusivamente interno do Licenciado.
+  - Utilizar o Software para criar uma biblioteca de componentes, design system, UI kit ou produto similar concorrente.
+  - Afirmar ser o autor ou proprietário do Software.
+
+3. REDISTRIBUIÇÃO DE ARTEFATOS COMPILADOS
+O Licenciado pode distribuir formas compiladas, minificadas ou transpiladas do Software **apenas quando integradas a um projeto maior**, no qual o Software não possa ser extraído ou utilizado como biblioteca independente.
+
+4. PROPRIEDADE
+A PS Code mantém todos os direitos, títulos e propriedade intelectual sobre o Software.  
+Nenhum direito é concedido ao Licenciado além daqueles expressamente definidos nesta Licença.
+
+5. RESCISÃO
+Esta Licença é rescindida imediatamente caso:
+  - O Licenciado viole quaisquer termos deste Acordo.
+  - O Software seja redistribuído, exposto ou disponibilizado publicamente em forma de código-fonte.
+
+Após a rescisão, o Licenciado deve cessar todo o uso e destruir todas as cópias do Software.
+
+6. AUSÊNCIA DE GARANTIA
+O Software é fornecido “NO ESTADO EM QUE SE ENCONTRA”, sem garantia de qualquer tipo, expressa ou implícita.  
+A PS Code não se responsabiliza por danos decorrentes do uso do Software.
+
+---
+
+Para dúvidas sobre licenciamento, entre em contato:  
+**PS Code — pscodecontato@gmail.com**

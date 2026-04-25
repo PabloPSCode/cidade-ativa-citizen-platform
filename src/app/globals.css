@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "@smastrom/react-rating/style.css";
+@import "ckeditor5/ckeditor5.css";
+@import "rc-checkbox/assets/index.css";
+@import "rc-slider/assets/index.css";
+@import "react-datepicker/dist/react-datepicker.css";
+@import "react-international-phone/style.css";
+@import "react-loading-skeleton/dist/skeleton.css";
+@import "react-photo-view/dist/react-photo-view.css";
+@import "react-responsive-modal/styles.css";
+
+:root {
+  --color-primary-50: #fef3c7;
+  --color-primary-100: #fde68a;
+  --color-primary-200: #fcd34d;
+  --color-primary-300: #fbbf24;
+  --color-primary-400: #f59e0b;
+  --color-primary-500: #d97706;
+  --color-primary-600: #b45309;
+  --color-primary-700: #92400e;
+  --color-primary-800: #78350f;
+  --color-primary-900: #45141d;
+  --color-primary-950: #3b0e14;
+
+  --color-secondary-50: #fffdea;
+  --color-secondary-100: #fef9c3;
+  --color-secondary-200: #fef08a;
+  --color-secondary-300: #fde047;
+  --color-secondary-400: #facc15;
+  --color-secondary-500: #ffcc29;
+  --color-secondary-600: #e6b800;
+  --color-secondary-700: #cca300;
+  --color-secondary-800: #997a00;
+  --color-secondary-900: #665200;
+  --color-secondary-950: #332900;
+
+  --color-background: #f6f5f7;
+  --color-foreground: #1f1f1f;
+  --color-bg-card: #ffffff;
+  --color-border-card: #ffffff;
+
+  --font-primary: var(--font-montserrat), ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --font-secondary: var(--font-montserrat), ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+}
+
+:root.dark {
+  --color-background: #111111;
+  --color-foreground: #fffefc;
+  --color-bg-card: #222222;
+  --color-border-card: #444444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-primary);
+}
+
+body {
+  color: var(--color-foreground);
+  background: var(--color-background);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+a {
+  font-family: var(--font-secondary);
+}
+
+button {
+  display: flex;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: auto;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name {
+  @apply capitalize;
+}
+
+@layer utilities {
+  .rc-slider-disabled {
+    background-color: var(--color-background) !important;
+  }
+}
+
+.react-international-phone-input-container,
+.react-international-phone-input,
+.react-international-phone-country-selector,
+.react-international-phone-country-selector-button,
+.react-international-phone-country-selector-dropdown {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.react-international-phone-country-selector-button {
+  border-right: 0 !important;
+}
+
+.react-international-phone-input:focus,
+.react-international-phone-country-selector-button:focus,
+.react-international-phone-country-selector-button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
