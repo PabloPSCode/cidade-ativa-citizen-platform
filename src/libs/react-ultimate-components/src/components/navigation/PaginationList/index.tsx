@@ -10,20 +10,42 @@ import clsx from "clsx";
 import React, { useState } from "react";
 
 interface ListPaginationProps {
-  /** Página atual (base 1). */
+  /** Pagina atual (base 1). */
   page: number;
-  /** Itens por página. */
+  /** Itens por pagina. */
   itemsPerPage?: 5 | 10 | 20 | 30 | 50 | 100;
-  /** Quantidade de páginas exibidas no meio. */
+  /** Quantidade de paginas exibidas no meio. */
   pagesToShow?: number;
-  /** Callback ao trocar de página. */
+  /** Callback ao trocar de pagina. */
   onPageChange: (newPage: number) => void;
   /** Lista de elementos a paginar. */
-  children: React.ReactNode[];
-  /** Classe opcional para o contêiner externo. */
+  children: React.ReactNode;
+  /** Classe opcional para o conteiner externo. */
   containerClassName?: string;
-  /** Classe opcional para os botões de número de página. */
+  /** Classe opcional para o conteiner da lista. */
+  listClassName?: string;
+  /** Classe opcional para o conteiner da navegacao. */
+  navigationClassName?: string;
+  /** Classe opcional para os botoes de numero de pagina. */
   pageNumberClassName?: string;
+  /** Classe opcional para a pagina ativa. */
+  activePageNumberClassName?: string;
+  /** Classe opcional para as paginas inativas. */
+  inactivePageNumberClassName?: string;
+  /** Classe opcional para o botao anterior. */
+  previousButtonClassName?: string;
+  /** Classe opcional para o botao proximo. */
+  nextButtonClassName?: string;
+  /** Classe opcional para o seletor de itens por pagina. */
+  itemsPerPageSelectClassName?: string;
+  /** Exibe o seletor de itens por pagina. */
+  showItemsPerPageSelect?: boolean;
+  /** Exibe os botoes de primeira e ultima pagina. */
+  showFirstLastButtons?: boolean;
+  /** Texto opcional do botao anterior. */
+  previousButtonLabel?: string;
+  /** Texto opcional do botao proximo. */
+  nextButtonLabel?: string;
   rightIcon?: React.ReactNode;
   leftIcon?: React.ReactNode;
   firstIcon?: React.ReactNode;
@@ -37,17 +59,29 @@ export default function ListPagination({
   onPageChange,
   children,
   containerClassName,
+  listClassName,
+  navigationClassName,
   pageNumberClassName,
+  activePageNumberClassName,
+  inactivePageNumberClassName,
+  previousButtonClassName,
+  nextButtonClassName,
+  itemsPerPageSelectClassName,
+  showItemsPerPageSelect = true,
+  showFirstLastButtons = true,
+  previousButtonLabel,
+  nextButtonLabel,
   rightIcon,
   leftIcon,
   firstIcon,
   lastIcon,
 }: ListPaginationProps) {
   const [itemsPerPageState, setItemsPerPageState] = useState(itemsPerPage);
+  const childrenArray = React.Children.toArray(children);
 
   const totalPages = Math.max(
     1,
-    Math.ceil(children.length / itemsPerPageState)
+    Math.ceil(childrenArray.length / itemsPerPageState)
   );
 
   const handlePageChange = (newPage: number) => {
@@ -59,7 +93,7 @@ export default function ListPagination({
   const handleGoToFirstPage = () => handlePageChange(1);
   const handleGoToLastPage = () => handlePageChange(totalPages);
 
-  const currentItemsToShow = children.slice(
+  const currentItemsToShow = childrenArray.slice(
     (page - 1) * itemsPerPageState,
     page * itemsPerPageState
   );
@@ -73,155 +107,160 @@ export default function ListPagination({
       end = totalPages;
       start = Math.max(1, end - pagesToShow + 1);
     }
+
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
   const isFirst = page === 1;
   const isLast = page === totalPages;
+  const shouldRenderEdgeButtons =
+    showFirstLastButtons && totalPages > 1 && totalPages > pagesToShow;
+
+  const previousButtonContent =
+    previousButtonLabel ?? leftIcon ?? <CaretLeftIcon size={18} weight="bold" />;
+  const nextButtonContent =
+    nextButtonLabel ?? rightIcon ?? (
+      <CaretRightIcon size={18} weight="bold" />
+    );
 
   return (
     <section className={clsx("w-full", containerClassName)}>
-      {/* Lista paginada */}
-      <div className="w-full flex flex-col items-start gap-3">
+      <div
+        className={clsx("flex w-full flex-col items-start gap-3", listClassName)}
+      >
         {currentItemsToShow}
       </div>
 
       <nav
         className={clsx(
-          "mt-8 sm:mt-10 mx-auto w-full",
-          "flex flex-col sm:flex-row sm:items-center justify-center",
-          "rounded-md bg-background",
-          "px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-sm"
+          "mx-auto mt-8 flex w-full flex-col gap-3 rounded-md bg-background px-2.5 py-1.5 shadow-sm sm:mt-10 sm:px-3 sm:py-2",
+          navigationClassName
         )}
         role="navigation"
-        aria-label="Paginação"
+        aria-label="Paginacao"
       >
-        <div className="w-full flex">
-          {/* Primeiro */}
-          {totalPages > pagesToShow && (
-            <button
-              type="button"
-              onClick={handleGoToFirstPage}
-              disabled={isFirst}
-              aria-label="Primeira página"
-              className={clsx(
-                "inline-flex items-center justify-center ",
-                "w-8 h-8 sm:w-9 sm:h-9",
-                "text-foreground/80",
-                "border rounded-md border-foreground/20",
-                isFirst && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              {firstIcon ?? <CaretDoubleLeftIcon size={18} weight="bold" />}
-            </button>
-          )}
+        <div className="grid w-full gap-4 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center">
+          <div className="flex items-center justify-start gap-2">
+            {shouldRenderEdgeButtons && (
+              <button
+                type="button"
+                onClick={handleGoToFirstPage}
+                disabled={isFirst}
+                aria-label="Primeira pagina"
+                className={clsx(
+                  "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/20 text-foreground/80",
+                  isFirst && "cursor-not-allowed opacity-50"
+                )}
+              >
+                {firstIcon ?? <CaretDoubleLeftIcon size={18} weight="bold" />}
+              </button>
+            )}
 
-          {/* Anterior */}
-          {totalPages > pagesToShow && (
             <button
               type="button"
               onClick={() => handlePageChange(page - 1)}
               disabled={isFirst}
-              aria-label="Página anterior"
+              aria-label="Pagina anterior"
               className={clsx(
-                "ml-1 inline-flex items-center justify-center",
-                "w-8 h-8 sm:w-9 sm:h-9",
-                "text-foreground/80",
-                "border rounded-md border-foreground/20",
-                isFirst && "opacity-50 cursor-not-allowed"
+                "inline-flex items-center justify-center rounded-md border border-foreground/20 text-foreground/80",
+                previousButtonLabel
+                  ? "min-h-10 px-4"
+                  : "h-10 w-10 rounded-xl",
+                isFirst && "cursor-not-allowed opacity-50",
+                previousButtonClassName
               )}
             >
-              {leftIcon ?? <CaretLeftIcon size={18} weight="bold" />}
+              {previousButtonContent}
             </button>
-          )}
+          </div>
 
-          {/* Números */}
-          <ul className="mx-1 sm:mx-2 flex items-center gap-1 sm:gap-1.5">
+          <ul className="flex items-center justify-center gap-1 sm:gap-1.5">
             {getVisiblePageNumbers().map((n) => {
               const active = n === page;
+
               return (
                 <li key={n}>
                   <button
                     type="button"
                     onClick={() => handlePageChange(n)}
-                    aria-label={`Ir para página ${n}`}
+                    aria-label={`Ir para pagina ${n}`}
                     aria-current={active ? "page" : undefined}
                     className={clsx(
-                      "inline-flex items-center justify-center font-medium",
-                      "w-8 h-8 sm:w-9 sm:h-9 text-xs sm:text-sm",
+                      "inline-flex h-8 w-8 items-center justify-center text-xs font-medium sm:h-9 sm:w-9 sm:text-sm",
                       active
-                        ? "text-primary-600 scale-125"
+                        ? "scale-110 text-primary-600"
                         : "bg-background text-foreground",
-                      pageNumberClassName
+                      pageNumberClassName,
+                      active
+                        ? activePageNumberClassName
+                        : inactivePageNumberClassName
                     )}
                   >
-                    {n < 10 ? `0${n}` : n}
+                    {n}
                   </button>
                 </li>
               );
             })}
           </ul>
 
-          {/* Próxima */}
-          {totalPages > pagesToShow && (
+          <div className="flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => handlePageChange(page + 1)}
               disabled={isLast}
-              aria-label="Próxima página"
+              aria-label="Proxima pagina"
               className={clsx(
-                "mr-1 inline-flex items-center justify-center",
-                "w-8 h-8 sm:w-9 sm:h-9",
-                "text-foreground/80",
-                "border rounded-md border-foreground/20",
-                isLast && "opacity-50 cursor-not-allowed"
+                "inline-flex items-center justify-center rounded-md border border-foreground/20 text-foreground/80",
+                nextButtonLabel ? "min-h-10 px-4" : "h-10 w-10 rounded-xl",
+                isLast && "cursor-not-allowed opacity-50",
+                nextButtonClassName
               )}
             >
-              {rightIcon ?? <CaretRightIcon size={18} weight="bold" />}
+              {nextButtonContent}
             </button>
-          )}
 
-          {/* Último */}
-          {totalPages > pagesToShow && (
-            <button
-              type="button"
-              onClick={handleGoToLastPage}
-              disabled={isLast}
-              aria-label="Última página"
-              className={clsx(
-                "inline-flex items-center justify-center",
-                "w-8 h-8 sm:w-9 sm:h-9",
-                "text-foreground/80",
-                "border rounded-md border-foreground/20",
-                isLast && "opacity-50 cursor-not-allowed"
-              )}
-            >
-              {lastIcon ?? <CaretDoubleRightIcon size={18} weight="bold" />}
-            </button>
-          )}
+            {shouldRenderEdgeButtons && (
+              <button
+                type="button"
+                onClick={handleGoToLastPage}
+                disabled={isLast}
+                aria-label="Ultima pagina"
+                className={clsx(
+                  "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/20 text-foreground/80",
+                  isLast && "cursor-not-allowed opacity-50"
+                )}
+              >
+                {lastIcon ?? <CaretDoubleRightIcon size={18} weight="bold" />}
+              </button>
+            )}
+          </div>
         </div>
-        {/* Controles de paginação */}
-        <select
-          name="items-per-page"
-          id="items-per-page"
-          value={itemsPerPageState}
-          onChange={(e) => {
-            const newItemsPerPage = parseInt(
-              e.target.value
-            ) as ListPaginationProps["itemsPerPage"];
-            setItemsPerPageState(newItemsPerPage as never);
-            onPageChange(1);
-          }}
-          className="p-2 border border-foreground/20 rounded-md bg-background text-foreground/80 text-xs sm:text-sm mt-2 sm:mt-0 sm:ml-4"
-        >
-          {[5, 10, 20, 30, 50, 100].map((option) => (
-            <option key={option} value={option}>
-              {option} itens por página
-            </option>
-          ))}
-        </select>
+
+        {showItemsPerPageSelect && (
+          <select
+            name="items-per-page"
+            id="items-per-page"
+            value={itemsPerPageState}
+            onChange={(e) => {
+              const newItemsPerPage = parseInt(
+                e.target.value
+              ) as ListPaginationProps["itemsPerPage"];
+              setItemsPerPageState(newItemsPerPage as never);
+              onPageChange(1);
+            }}
+            className={clsx(
+              "rounded-md border border-foreground/20 bg-background p-2 text-xs text-foreground/80 sm:text-sm",
+              itemsPerPageSelectClassName
+            )}
+          >
+            {[5, 10, 20, 30, 50, 100].map((option) => (
+              <option key={option} value={option}>
+                {option} itens por pagina
+              </option>
+            ))}
+          </select>
+        )}
       </nav>
     </section>
   );
 }
-
