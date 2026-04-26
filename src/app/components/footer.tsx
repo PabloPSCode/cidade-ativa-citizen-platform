@@ -2,15 +2,15 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navigationLinks = [
-  { href: "/#sobre", label: "O que e a CidadeAtiva?" },
+  { href: "/#sobre", label: "O que é a CidadeAtiva?" },
   { href: "/#como-funciona", label: "Como funciona?" },
-  { href: "/#duvidas", label: "Duvidas" },
-  { href: "/#solicitacoes-gerais", label: "Solicitacoes" },
-  { href: "/#cidadao-legal", label: "Cidadao legal" },
+  { href: "/#duvidas", label: "Dúvidas" },
+  { href: "/#solicitacoes-gerais", label: "Solicitações" },
+  { href: "/cidadao-legal", label: "Cidadão legal" },
 ];
 
 const policyLinks = [
-  { href: "#", label: "Politica de Privacidade" },
+  { href: "#", label: "Política de Privacidade" },
   { href: "#", label: "Termos de Uso" },
 ];
 
@@ -58,7 +58,7 @@ export default function Footer() {
 
           <div className="space-y-4">
             <h2 className="text-sm font-black uppercase tracking-[0.18em] text-slate-400">
-              Termos e politicas
+              Termos e políticas
             </h2>
             <ul className="space-y-3 text-sm text-foreground/75">
               {policyLinks.map((item) => (

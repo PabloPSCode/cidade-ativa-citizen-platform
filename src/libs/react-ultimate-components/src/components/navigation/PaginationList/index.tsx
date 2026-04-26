@@ -137,7 +137,7 @@ export default function ListPagination({
           navigationClassName
         )}
         role="navigation"
-        aria-label="Paginacao"
+        aria-label="Paginação"
       >
         <div className="grid w-full gap-4 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center">
           <div className="flex items-center justify-start gap-2">
@@ -146,7 +146,7 @@ export default function ListPagination({
                 type="button"
                 onClick={handleGoToFirstPage}
                 disabled={isFirst}
-                aria-label="Primeira pagina"
+                aria-label="Primeira página"
                 className={clsx(
                   "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/20 text-foreground/80",
                   isFirst && "cursor-not-allowed opacity-50"
@@ -183,7 +183,7 @@ export default function ListPagination({
                   <button
                     type="button"
                     onClick={() => handlePageChange(n)}
-                    aria-label={`Ir para pagina ${n}`}
+                    aria-label={`Ir para página ${n}`}
                     aria-current={active ? "page" : undefined}
                     className={clsx(
                       "inline-flex h-8 w-8 items-center justify-center text-xs font-medium sm:h-9 sm:w-9 sm:text-sm",
@@ -208,7 +208,7 @@ export default function ListPagination({
               type="button"
               onClick={() => handlePageChange(page + 1)}
               disabled={isLast}
-              aria-label="Proxima pagina"
+              aria-label="Próxima página"
               className={clsx(
                 "inline-flex items-center justify-center rounded-md border border-foreground/20 text-foreground/80",
                 nextButtonLabel ? "min-h-10 px-4" : "h-10 w-10 rounded-xl",
@@ -224,7 +224,7 @@ export default function ListPagination({
                 type="button"
                 onClick={handleGoToLastPage}
                 disabled={isLast}
-                aria-label="Ultima pagina"
+                aria-label="Última página"
                 className={clsx(
                   "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/20 text-foreground/80",
                   isLast && "cursor-not-allowed opacity-50"
@@ -255,7 +255,7 @@ export default function ListPagination({
           >
             {[5, 10, 20, 30, 50, 100].map((option) => (
               <option key={option} value={option}>
-                {option} itens por pagina
+                {option} itens por página
               </option>
             ))}
           </select>

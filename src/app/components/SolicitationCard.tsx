@@ -8,55 +8,20 @@ import {
 } from "@phosphor-icons/react";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from "../../libs/react-ultimate-components/src";
+import {
+  formatSolicitationDate,
+  solicitationStatusMap,
+  type SolicitationStatus,
+  type SolicitationSummary,
+} from "../constants/solicitations";
 
-export type SolicitationStatus = "not_resolved" | "in_progress" | "resolved";
-
-export interface SolicitationCardProps {
-  requestingUserId: string;
-  description: string;
-  imageUrls: string[];
-  neighborhood: string;
-  createdAt: string;
-  street: string;
-  status: SolicitationStatus;
+export interface SolicitationCardProps
+  extends Omit<SolicitationSummary, "id" | "protocolNumber"> {
   className?: string;
+  detailsHref?: string;
 }
-
-export const solicitationStatusMap: Record<
-  SolicitationStatus,
-  {
-    label: string;
-    dotClassName: string;
-    badgeClassName: string;
-  }
-> = {
-  not_resolved: {
-    label: "Nao resolvido",
-    dotClassName: "bg-amber-400",
-    badgeClassName:
-      "bg-amber-500/15 text-amber-700 dark:bg-amber-400/15 dark:text-amber-200",
-  },
-  in_progress: {
-    label: "Em andamento",
-    dotClassName: "bg-sky-400",
-    badgeClassName:
-      "bg-sky-500/15 text-sky-700 dark:bg-sky-400/15 dark:text-sky-200",
-  },
-  resolved: {
-    label: "Resolvido",
-    dotClassName: "bg-emerald-500",
-    badgeClassName:
-      "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-200",
-  },
-};
-
-const formatDate = (value: string) =>
-  new Intl.DateTimeFormat("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(value));
 
 export default function SolicitationCard({
   requestingUserId,
@@ -67,7 +32,9 @@ export default function SolicitationCard({
   street,
   status,
   className,
+  detailsHref,
 }: SolicitationCardProps) {
+  const router = useRouter();
   const statusConfig = solicitationStatusMap[status];
   const mainImageUrl = imageUrls[0] || "/logo.png";
 
@@ -83,7 +50,7 @@ export default function SolicitationCard({
         <div className="relative h-44 overflow-hidden rounded-[1.5rem] bg-neutral-200 dark:bg-white/5 sm:h-52 xl:h-28 xl:w-[136px]">
           <Image
             src={mainImageUrl}
-            alt={`Imagem da solicitacao em ${street}`}
+            alt={`Imagem da solicitação em ${street}`}
             fill
             sizes="(min-width: 1280px) 136px, (min-width: 640px) 50vw, 100vw"
             className="object-cover"
@@ -94,7 +61,7 @@ export default function SolicitationCard({
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-3">
               <h3 className="text-lg font-black tracking-tight">
-                Solicitacao
+                Solicitação
               </h3>
               <span
                 className={clsx(
@@ -172,7 +139,7 @@ export default function SolicitationCard({
                 weight="fill"
                 className="shrink-0 text-foreground/55"
               />
-              <span>{formatDate(createdAt)}</span>
+              <span>{formatSolicitationDate(createdAt)}</span>
             </div>
           </div>
         </div>
@@ -181,6 +148,9 @@ export default function SolicitationCard({
           <Button
             type="button"
             label="Ver detalhes"
+            onClick={
+              detailsHref ? () => router.push(detailsHref) : undefined
+            }
             className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 xl:min-w-[10rem]"
           />
         </div>

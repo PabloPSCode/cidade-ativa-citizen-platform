@@ -13,131 +13,16 @@ import {
   Section,
 } from "../libs/react-ultimate-components/src";
 import FilterSearchCard from "./components/FilterSearchCard";
-import SolicitationCard, {
-  type SolicitationCardProps,
+import SolicitationCard from "./components/SolicitationCard";
+import {
+  buildSolicitationDetailsHref,
+  mockedSolicitations,
+  neighborhoodOptions,
+  requestingUserOptions,
+  solicitationStats,
+  statusOptions,
   type SolicitationStatus,
-  solicitationStatusMap,
-} from "./components/SolicitationCard";
-
-interface MockedSolicitation extends SolicitationCardProps {
-  id: string;
-}
-
-const requesterNames = [
-  "Jose Antonio da Silva",
-  "Maria Clara Souza",
-  "Andre Luiz Pereira",
-  "Helena Aparecida Rocha",
-  "Roberto Nunes Costa",
-  "Paula Cristina Martins",
-];
-
-const baseSolicitations: Array<
-  Omit<MockedSolicitation, "id" | "createdAt" | "requestingUserId" | "status">
-> = [
-  {
-    description:
-      "Lote vazio tomado por mato alto, descarte irregular e focos de agua parada bloqueando a passagem de pedestres e ciclistas.",
-    neighborhood: "Nova Esperanca",
-    street: "Rua das Acacias, 142",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80",
-    ],
-  },
-  {
-    description:
-      "Bueiro sem tampa em frente a escola municipal, com risco constante para criancas, motociclistas e moradores da rua.",
-    neighborhood: "Jardim Primavera",
-    street: "Avenida Central, 820",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=900&q=80",
-    ],
-  },
-  {
-    description:
-      "Iluminacao publica apagada em tres postes consecutivos, deixando o trecho escuro e inseguro durante a noite.",
-    neighborhood: "Vila Aurora",
-    street: "Rua Francisco Melo, 51",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=900&q=80",
-    ],
-  },
-  {
-    description:
-      "Calcada quebrada e inclinada na area da UBS, dificultando o acesso de cadeirantes e idosos ao atendimento.",
-    neighborhood: "Centro",
-    street: "Praca da Matriz, 12",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1460317442991-0ec209397118?auto=format&fit=crop&w=900&q=80",
-    ],
-  },
-  {
-    description:
-      "Acumulo frequente de lixo organico em esquina residencial, atraindo insetos, mau cheiro e animais.",
-    neighborhood: "Parque dos Girassois",
-    street: "Rua das Rosas, 204",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
-    ],
-  },
-  {
-    description:
-      "Sinalizacao horizontal quase apagada em cruzamento muito movimentado, com varios relatos de quase acidentes.",
-    neighborhood: "Residencial do Lago",
-    street: "Rua do Comercio, 331",
-    imageUrls: [
-      "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=900&q=80",
-    ],
-  },
-];
-
-const solicitationStatuses: SolicitationStatus[] = [
-  "not_resolved",
-  "in_progress",
-  "resolved",
-];
-
-const mockedSolicitations: MockedSolicitation[] = Array.from(
-  { length: 18 },
-  (_, index) => {
-    const seed = baseSolicitations[index % baseSolicitations.length];
-    const month = index % 4;
-    const day = 3 + index;
-
-    return {
-      id: `sol-${index + 1}`,
-      requestingUserId: requesterNames[index % requesterNames.length],
-      createdAt: new Date(2026, month, day).toISOString(),
-      status: solicitationStatuses[index % solicitationStatuses.length],
-      ...seed,
-    };
-  }
-);
-
-const neighborhoodOptions = Array.from(
-  new Set(mockedSolicitations.map((item) => item.neighborhood))
-).sort((left, right) => left.localeCompare(right));
-
-const requestingUserOptions = Array.from(
-  new Set(mockedSolicitations.map((item) => item.requestingUserId))
-).sort((left, right) => left.localeCompare(right));
-
-const statusOptions = solicitationStatuses.map((status) => ({
-  value: status,
-  label: solicitationStatusMap[status].label,
-}));
-
-const stats = {
-  total: mockedSolicitations.length,
-  pending: mockedSolicitations.filter(
-    (item) => item.status === "not_resolved"
-  ).length,
-  inProgress: mockedSolicitations.filter(
-    (item) => item.status === "in_progress"
-  ).length,
-  resolved: mockedSolicitations.filter((item) => item.status === "resolved")
-    .length,
-};
+} from "./constants/solicitations";
 
 const formatCountLabel = (value: number, singular: string, plural: string) =>
   `${value} ${value === 1 ? singular : plural}`;
@@ -174,6 +59,7 @@ export default function Home() {
           item.neighborhood,
           item.street,
           item.requestingUserId,
+          item.protocolNumber,
         ].some((value) => value.toLowerCase().includes(normalizedSearch));
 
       const matchesNeighborhood =
@@ -232,24 +118,24 @@ export default function Home() {
             <div className="space-y-3">
               <div className="inline-flex items-center gap-3 rounded-full bg-background/90 px-4 py-2 text-sm font-semibold text-foreground/80 shadow-sm">
                 <BuildingsIcon size={22} weight="fill" />
-                <span>Solicitacoes gerais</span>
+                <span>Solicitações gerais</span>
               </div>
 
               <div className="space-y-2">
                 <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
-                  Painel cidadao de solicitacoes urbanas
+                  Painel cidadão de solicitações urbanas
                 </h1>
                 <p className="max-w-3xl text-sm leading-6 text-foreground/70 sm:text-base">
-                  Consulte situacoes reportadas pela comunidade, filtre por
+                  Consulte situações reportadas pela comunidade, filtre por
                   bairro, status e requerente, e acompanhe a data de cadastro
-                  das ocorrencias.
+                  das ocorrências.
                 </p>
               </div>
 
               <p className="text-sm font-medium text-foreground/70 sm:text-base">
                 Atualmente existem{" "}
                 <span className="font-bold text-foreground">
-                  {stats.total} solicitacoes cadastradas
+                  {solicitationStats.total} solicitações cadastradas
                 </span>
                 .
               </p>
@@ -257,7 +143,7 @@ export default function Home() {
 
             <Button
               type="button"
-              label="Cadastrar situacao"
+              label="Cadastrar situação"
               className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 sm:w-auto"
             />
           </div>
@@ -272,12 +158,16 @@ export default function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
                     Total
                   </p>
-                  <p className="text-2xl font-black">{stats.total}</p>
+                  <p className="text-2xl font-black">{solicitationStats.total}</p>
                 </div>
               </div>
               <p className="mt-4 text-sm text-foreground/65">
-                {formatCountLabel(stats.total, "registro", "registros")} da
-                comunidade nesta listagem mockada.
+                {formatCountLabel(
+                  solicitationStats.total,
+                  "registro",
+                  "registros"
+                )}{" "}
+                da comunidade nesta listagem mockada.
               </p>
             </article>
 
@@ -290,7 +180,9 @@ export default function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
                     Pendentes
                   </p>
-                  <p className="text-2xl font-black">{stats.pending}</p>
+                  <p className="text-2xl font-black">
+                    {solicitationStats.pending}
+                  </p>
                 </div>
               </div>
               <p className="mt-4 text-sm text-foreground/65">
@@ -307,11 +199,13 @@ export default function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
                     Em andamento
                   </p>
-                  <p className="text-2xl font-black">{stats.inProgress}</p>
+                  <p className="text-2xl font-black">
+                    {solicitationStats.inProgress}
+                  </p>
                 </div>
               </div>
               <p className="mt-4 text-sm text-foreground/65">
-                Demandas acompanhadas pelos setores responsaveis.
+                Demandas acompanhadas pelos setores responsáveis.
               </p>
             </article>
 
@@ -324,11 +218,13 @@ export default function Home() {
                   <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
                     Resolvidas
                   </p>
-                  <p className="text-2xl font-black">{stats.resolved}</p>
+                  <p className="text-2xl font-black">
+                    {solicitationStats.resolved}
+                  </p>
                 </div>
               </div>
               <p className="mt-4 text-sm text-foreground/65">
-                Solicitacoes marcadas como concluidas no fluxo atual.
+                Solicitações marcadas como concluídas no fluxo atual.
               </p>
             </article>
           </div>
@@ -357,11 +253,11 @@ export default function Home() {
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-black tracking-tight sm:text-2xl">
-                Listagem de solicitacoes
+                Listagem de solicitações
               </h2>
               <p className="text-sm text-foreground/65">
                 {hasActiveFilters
-                  ? `Exibindo ${filteredSolicitations.length} de ${stats.total} resultados encontrados.`
+                  ? `Exibindo ${filteredSolicitations.length} de ${solicitationStats.total} resultados encontrados.`
                   : `Exibindo ${filteredSolicitations.length} resultados mais recentes.`}
               </p>
             </div>
@@ -377,7 +273,7 @@ export default function Home() {
               listClassName="gap-5"
               navigationClassName="rounded-[1.75rem] border border-border-card/70 bg-bg-card px-4 py-4 shadow-[0_24px_56px_-40px_rgba(15,23,42,0.45)] sm:px-5"
               previousButtonLabel="Anterior"
-              nextButtonLabel="Proximo"
+              nextButtonLabel="Próximo"
               previousButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               nextButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               pageNumberClassName="rounded-full text-sm font-semibold"
@@ -387,7 +283,17 @@ export default function Home() {
               showFirstLastButtons={false}
             >
               {filteredSolicitations.map((solicitation) => (
-                <SolicitationCard key={solicitation.id} {...solicitation} />
+                <SolicitationCard
+                  key={solicitation.id}
+                  requestingUserId={solicitation.requestingUserId}
+                  description={solicitation.description}
+                  imageUrls={solicitation.imageUrls}
+                  neighborhood={solicitation.neighborhood}
+                  createdAt={solicitation.createdAt}
+                  street={solicitation.street}
+                  status={solicitation.status}
+                  detailsHref={buildSolicitationDetailsHref(solicitation.id)}
+                />
               ))}
             </PaginationList>
           ) : (
@@ -395,7 +301,7 @@ export default function Home() {
               <h3 className="text-lg font-bold">Nenhum resultado encontrado</h3>
               <p className="mt-2 text-sm text-foreground/65">
                 Ajuste a busca ou limpe os filtros para visualizar as
-                solicitacoes mockadas novamente.
+                solicitações mockadas novamente.
               </p>
               <Button
                 type="button"

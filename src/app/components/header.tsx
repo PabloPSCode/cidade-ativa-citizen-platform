@@ -8,12 +8,12 @@ import { Button } from "../../libs/react-ultimate-components/src";
 const navigationItems = [
   {
     href: "/#solicitacoes-gerais",
-    label: "Solicitacoes gerais",
+    label: "Solicitações gerais",
     icon: BuildingsIcon,
   },
   {
-    href: "/#cidadao-legal",
-    label: "Cidadao legal",
+    href: "/cidadao-legal",
+    label: "Cidadão legal",
     icon: ScalesIcon,
   },
 ];

@@ -10,7 +10,7 @@ import {
 import clsx from "clsx";
 import type { Dispatch, SetStateAction } from "react";
 import { SearchInput } from "../../libs/react-ultimate-components/src";
-import type { SolicitationStatus } from "./SolicitationCard";
+import type { SolicitationStatus } from "../constants/solicitations";
 
 export interface FilterSearchCardProps {
   search: string;
@@ -64,7 +64,7 @@ export default function FilterSearchCard({
         search={search}
         setSearch={setSearch}
         variant="citizen"
-        placeholder="Pesquise por uma situacao ou bairro"
+        placeholder="Pesquise por uma situação ou bairro"
       />
 
       <div className="rounded-[1.85rem] border border-border-card/70 bg-bg-card p-4 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)] sm:p-5">
@@ -152,7 +152,7 @@ export default function FilterSearchCard({
           <label className="flex flex-col gap-2">
             <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
               <ArrowsDownUpIcon size={14} weight="bold" />
-              Data da solicitacao
+              Data da solicitação
             </span>
             <select
               value={dateOrder}
