@@ -23,6 +23,17 @@ import {
 export interface SolicitationDetailsCardProps
   extends Omit<SolicitationRecord, "id"> {
   className?: string;
+  entityLabel?: string;
+  statusLabel?: string;
+  requestingUserLabel?: string;
+  descriptionLabel?: string;
+  resolutionCommentLabel?: string;
+  addressLabel?: string;
+  resolvedAtLabel?: string;
+  mapSectionTitle?: string;
+  mapTitlePrefix?: string;
+  beforeImagesLabel?: string;
+  afterImagesLabel?: string;
 }
 
 function DetailsInfoBlock({
@@ -47,7 +58,9 @@ function DetailsInfoBlock({
         {label}
       </p>
       <div className="mt-2 flex items-start gap-2 text-sm font-semibold text-foreground sm:text-base">
-        {icon && <span className="mt-0.5 shrink-0 text-foreground/55">{icon}</span>}
+        {icon && (
+          <span className="mt-0.5 shrink-0 text-foreground/55">{icon}</span>
+        )}
         <div className="min-w-0">{value}</div>
       </div>
     </div>
@@ -115,6 +128,17 @@ export default function SolicitationDetailsCard({
   mapAddress,
   status,
   className,
+  entityLabel = "Solicitação",
+  statusLabel,
+  requestingUserLabel = "Requerente",
+  descriptionLabel = "Descrição",
+  resolutionCommentLabel = "Comentário",
+  addressLabel = "Endereço",
+  resolvedAtLabel = "Data de resolução",
+  mapSectionTitle = "Localização no mapa",
+  mapTitlePrefix = "Mapa da solicitação",
+  beforeImagesLabel = "Imagens antes",
+  afterImagesLabel = "Imagens depois",
 }: SolicitationDetailsCardProps) {
   const statusConfig = solicitationStatusMap[status];
 
@@ -126,7 +150,7 @@ export default function SolicitationDetailsCard({
       )}
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <DetailsInfoBlock label="Solicitação" value={protocolNumber} />
+        <DetailsInfoBlock label={entityLabel} value={protocolNumber} />
 
         <DetailsInfoBlock
           label="Status"
@@ -143,7 +167,7 @@ export default function SolicitationDetailsCard({
                   statusConfig.dotClassName
                 )}
               />
-              {statusConfig.label}
+              {statusLabel ?? statusConfig.label}
             </span>
           }
         />
@@ -155,21 +179,23 @@ export default function SolicitationDetailsCard({
         />
 
         <DetailsInfoBlock
-          label="Requerente"
+          label={requestingUserLabel}
           icon={<UserCircleIcon size={18} weight="fill" />}
           value={requestingUserId}
         />
 
         <DetailsInfoBlock
-          label="Data de resolução"
+          label={resolvedAtLabel}
           icon={<SpinnerGapIcon size={18} weight="bold" />}
           value={formatSolicitationDate(resolvedAt)}
         />
       </div>
 
       <div className="mt-6 grid gap-4 xl:grid-cols-2">
-        <DetailsTextSection title="Descrição">{description}</DetailsTextSection>
-        <DetailsTextSection title="Comentário">
+        <DetailsTextSection title={descriptionLabel}>
+          {description}
+        </DetailsTextSection>
+        <DetailsTextSection title={resolutionCommentLabel}>
           <div className="flex items-start gap-3">
             <ChatCircleTextIcon
               size={20}
@@ -183,7 +209,7 @@ export default function SolicitationDetailsCard({
 
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
         <DetailsInfoBlock
-          label="Endereço"
+          label={addressLabel}
           icon={<MapPinLineIcon size={18} weight="fill" />}
           value={street}
           className="min-h-[7.5rem]"
@@ -199,7 +225,7 @@ export default function SolicitationDetailsCard({
       <div className="mt-6 grid gap-5 xl:grid-cols-3">
         <section className="rounded-[1.6rem] border border-border-card/60 bg-background/70 p-5 dark:bg-white/[0.02]">
           <h3 className="text-lg font-black tracking-tight">
-            Localização no mapa
+            {mapSectionTitle}
           </h3>
           <GoogleMapsRender
             address={mapAddress}
@@ -207,13 +233,13 @@ export default function SolicitationDetailsCard({
             minHeight={300}
             borderRadius={22}
             containerClassName="mt-4"
-            title={`Mapa da solicitação ${protocolNumber}`}
+            title={`${mapTitlePrefix} ${protocolNumber}`}
           />
         </section>
 
-        <DetailsImageSection title="Imagens antes" images={imageUrls} />
+        <DetailsImageSection title={beforeImagesLabel} images={imageUrls} />
         <DetailsImageSection
-          title="Imagens depois"
+          title={afterImagesLabel}
           images={resolutionImageUrls}
         />
       </div>

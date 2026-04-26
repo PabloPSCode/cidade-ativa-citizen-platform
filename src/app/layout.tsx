@@ -12,6 +12,7 @@ import {
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import { getStoreByDomain } from "../lib/store-data";
+import Breadcrumb from "./components/Breadcrumb";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import ThemeTokens from "./components/ThemeTokens";
@@ -100,11 +101,12 @@ export default async function RootLayout({
   const storePayload = await getStoreByDomain(host);
 
   return (
-    <html lang="en" className={fontVariables}>
+    <html lang="pt-BR" className={fontVariables}>
       <body className="overflow-x-hidden">
         <StoreProvider value={storePayload}>
           <ThemeTokens />
           <Header />
+          <Breadcrumb />
           {children}
           <Footer />
         </StoreProvider>

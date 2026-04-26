@@ -2,6 +2,7 @@ import { ScalesIcon } from "@phosphor-icons/react/dist/ssr";
 import { Section } from "../../libs/react-ultimate-components/src";
 import RankingCard from "../components/RankingCard";
 import {
+  buildCitizenLegalCitizenActionsHref,
   citizenLegalMonthLabel,
   citizenLegalRanking,
 } from "../constants/citizen-legal";
@@ -41,6 +42,7 @@ export default function CitizenLegalPage() {
               fullName={item.fullName}
               points={item.points}
               createdAt={item.createdAt}
+              actionsHref={buildCitizenLegalCitizenActionsHref(item.id)}
             />
           ))}
         </section>

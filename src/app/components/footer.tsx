@@ -14,6 +14,15 @@ const policyLinks = [
   { href: "#", label: "Termos de Uso" },
 ];
 
+const usefulPhones = [
+  { label: "Bombeiros", phone: "193" },
+  { label: "Polícia Militar", phone: "190" },
+  { label: "Prefeitura", phone: "156" },
+  { label: "SAMU", phone: "192" },
+  { label: "Defesa Civil", phone: "199" },
+  { label: "Guarda Municipal", phone: "153" },
+];
+
 export default function Footer() {
   return (
     <footer
@@ -21,7 +30,7 @@ export default function Footer() {
       className="border-t border-black/5 bg-white text-foreground dark:border-white/10 dark:bg-[#0f0f10]"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.25fr_1fr_1fr]">
+        <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_0.9fr_0.9fr_1.1fr]">
           <div className="space-y-5">
             <Link href="/" className="inline-flex items-center">
               <Image
@@ -68,6 +77,27 @@ export default function Footer() {
                     className="transition hover:text-foreground"
                   >
                     {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h2 className="text-sm font-black uppercase tracking-[0.18em] text-slate-400">
+              Telefones úteis
+            </h2>
+            <ul className="grid gap-3 text-sm text-foreground/80">
+              {usefulPhones.map((item) => (
+                <li key={item.label}>
+                  <Link
+                    href={`tel:${item.phone}`}
+                    className="flex items-center justify-between gap-4 rounded-2xl border border-black/5 bg-background/60 px-4 py-3 transition hover:border-black/10 hover:bg-background dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+                  >
+                    <span className="font-medium">{item.label}</span>
+                    <span className="rounded-full bg-foreground/5 px-3 py-1 font-bold text-foreground dark:bg-white/10">
+                      {item.phone}
+                    </span>
                   </Link>
                 </li>
               ))}

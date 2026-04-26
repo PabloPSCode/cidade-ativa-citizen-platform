@@ -2,6 +2,7 @@
 
 import { CalendarDotsIcon, MedalIcon, ScalesIcon } from "@phosphor-icons/react";
 import clsx from "clsx";
+import { useRouter } from "next/navigation";
 import { Button } from "../../libs/react-ultimate-components/src";
 import { formatCitizenLegalDate } from "../constants/citizen-legal";
 
@@ -12,6 +13,7 @@ export interface RankingCardProps {
   createdAt: string;
   className?: string;
   actionsLabel?: string;
+  actionsHref?: string;
 }
 
 const positionStyles: Record<
@@ -60,7 +62,9 @@ export default function RankingCard({
   createdAt,
   className,
   actionsLabel = "Ver ações",
+  actionsHref,
 }: RankingCardProps) {
+  const router = useRouter();
   const accentStyle = positionStyles[position] ?? fallbackStyle;
   const showMedal = position <= 3;
 
@@ -143,7 +147,8 @@ export default function RankingCard({
           <Button
             type="button"
             label={actionsLabel}
-            title="Detalhamento das ações em breve"
+            title="Ver ações cidadãs"
+            onClick={actionsHref ? () => router.push(actionsHref) : undefined}
             className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500"
           />
         </div>
