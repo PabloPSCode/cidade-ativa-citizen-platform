@@ -1,3 +1,5 @@
+import { mockAuthenticatedUser } from "./auth";
+
 export type SolicitationStatus = "not_resolved" | "in_progress" | "resolved";
 
 export interface SolicitationSummary {
@@ -47,7 +49,7 @@ export const solicitationStatusMap: Record<
   },
 };
 
-const requesterNames = [
+const otherRequesterNames = [
   "José Antônio da Silva",
   "Maria Clara Souza",
   "André Luiz Pereira",
@@ -225,7 +227,10 @@ export const mockedSolicitations: SolicitationRecord[] = Array.from(
     return {
       id: `sol-${index + 1}`,
       protocolNumber: `${12331 + index}`,
-      requestingUserId: requesterNames[index % requesterNames.length],
+      requestingUserId:
+        index < 12
+          ? mockAuthenticatedUser.name
+          : otherRequesterNames[(index - 12) % otherRequesterNames.length],
       ...seed,
       createdAt,
       resolvedAt,
@@ -274,6 +279,10 @@ export const formatSolicitationDate = (value?: string) => {
 
 export const getSolicitationById = (id: string) =>
   mockedSolicitations.find((item) => item.id === id);
+
+export const getSolicitationsByRequestingUserId = (
+  requestingUserId: string
+) => mockedSolicitations.filter((item) => item.requestingUserId === requestingUserId);
 
 export const buildSolicitationDetailsHref = (id: string) =>
   `/solicitacoes/${id}`;

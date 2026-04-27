@@ -3,7 +3,9 @@
 import {
   CalendarDotsIcon,
   MapPinLineIcon,
+  PencilSimpleLineIcon,
   SpinnerGapIcon,
+  TrashIcon,
   UserCircleIcon,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
@@ -24,6 +26,8 @@ export interface SolicitationCardProps
   requestingUserLabel?: string;
   statusLabel?: string;
   detailsButtonLabel?: string;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 export default function SolicitationCard({
@@ -40,16 +44,21 @@ export default function SolicitationCard({
   requestingUserLabel = "Requerente",
   statusLabel,
   detailsButtonLabel = "Ver detalhes",
+  onEdit,
+  onDelete,
 }: SolicitationCardProps) {
   const router = useRouter();
   const statusConfig = solicitationStatusMap[status];
   const mainImageUrl = imageUrls[0] || "/logo.png";
   const isInteractive = Boolean(detailsHref);
+
   const handleNavigateToDetails = () => {
     if (detailsHref) {
       router.push(detailsHref);
     }
   };
+
+  const hasManagementActions = Boolean(onEdit || onDelete);
 
   return (
     <article
@@ -67,8 +76,7 @@ export default function SolicitationCard({
           : undefined
       }
       className={clsx(
-        "solicitation-card Container",
-        "rounded-[2rem] border border-border-card/70 bg-bg-card p-4 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)] transition sm:p-5 xl:p-6",
+        "solicitation-card Container rounded-[2rem] border border-border-card/70 bg-bg-card p-4 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)] transition sm:p-5 xl:p-6",
         isInteractive &&
           "cursor-pointer hover:-translate-y-0.5 hover:border-foreground/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50",
         className
@@ -170,11 +178,54 @@ export default function SolicitationCard({
           </div>
         </div>
 
-        <div className="xl:justify-self-end">
+        <div
+          className={clsx(
+            "flex flex-wrap items-center gap-3 xl:justify-self-end",
+            hasManagementActions ? "xl:max-w-[18rem]" : "xl:max-w-[11rem]"
+          )}
+        >
+          {onEdit ? (
+            <button
+              type="button"
+              title="Editar solicitação"
+              aria-label="Editar solicitação"
+              onClick={(event) => {
+                event.stopPropagation();
+                onEdit();
+              }}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-foreground/10 bg-background/80 text-foreground transition hover:border-foreground/20 hover:bg-foreground/5 dark:bg-white/[0.03]"
+            >
+              <PencilSimpleLineIcon size={20} weight="bold" />
+            </button>
+          ) : null}
+
+          {onDelete ? (
+            <button
+              type="button"
+              title="Excluir solicitação"
+              aria-label="Excluir solicitação"
+              onClick={(event) => {
+                event.stopPropagation();
+                onDelete();
+              }}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-rose-200 bg-rose-500/10 text-rose-600 transition hover:bg-rose-500/15 dark:border-rose-400/20 dark:text-rose-300"
+            >
+              <TrashIcon size={20} weight="fill" />
+            </button>
+          ) : null}
+
           <Button
             type="button"
             label={detailsButtonLabel}
-            className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 xl:min-w-[10rem]"
+            onClick={
+              detailsHref
+                ? (event) => {
+                    event?.stopPropagation?.();
+                    handleNavigateToDetails();
+                  }
+                : undefined
+            }
+            className="flex-1 justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 xl:min-w-[10rem]"
           />
         </div>
       </div>

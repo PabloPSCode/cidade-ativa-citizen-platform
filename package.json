@@ -14,7 +14,8 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-share": "^5.2.2",
-    "react-ultimate-components": "file:src/libs/react-ultimate-components"
+    "react-ultimate-components": "file:src/libs/react-ultimate-components",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@types/node": "^20.11.7",

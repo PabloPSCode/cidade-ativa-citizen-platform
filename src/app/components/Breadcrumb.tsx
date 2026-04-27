@@ -23,6 +23,7 @@ interface BreadcrumbItem {
 const segmentLabels: Record<string, string> = {
   acoes: "Ações",
   "cidadao-legal": "Cidadão Legal",
+  "minhas-solicitacoes": "Minhas solicitações",
   pesquisa: "Pesquisa",
   produto: "Produto",
   solicitacoes: "Solicitações",
