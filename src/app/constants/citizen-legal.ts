@@ -180,6 +180,7 @@ const actionTemplates: Array<
   >
 > = [
   {
+    title: "Mutirão de limpeza na praça central",
     description:
       "Organização de mutirão comunitário para limpeza da praça principal e orientação sobre descarte correto de resíduos.",
     neighborhood: "Centro",
@@ -191,6 +192,7 @@ const actionTemplates: Array<
     resolutionImageUrls: afterImageSets[0],
   },
   {
+    title: "Plantio de mudas no corredor escolar",
     description:
       "Plantio de mudas nativas em corredor escolar para ampliar sombra, reduzir calor e incentivar educação ambiental entre crianças.",
     neighborhood: "Jardim Primavera",
@@ -203,6 +205,7 @@ const actionTemplates: Array<
     resolutionImageUrls: afterImageSets[1],
   },
   {
+    title: "Campanha solidária de agasalhos",
     description:
       "Campanha de arrecadação e distribuição de agasalhos com pontos de coleta em comércios de bairro e apoio de voluntários locais.",
     neighborhood: "Nova Esperança",
@@ -215,6 +218,7 @@ const actionTemplates: Array<
     resolutionImageUrls: afterImageSets[2],
   },
   {
+    title: "Mapeamento colaborativo de acessibilidade",
     description:
       "Mapeamento colaborativo de pontos com acessibilidade comprometida para encaminhamento formal ao poder público e acompanhamento cidadão.",
     neighborhood: "Vila Aurora",
@@ -226,6 +230,7 @@ const actionTemplates: Array<
     resolutionImageUrls: afterImageSets[3],
   },
   {
+    title: "Oficina cidadã de reciclagem",
     description:
       "Oficina cidadã sobre reciclagem, uso consciente dos espaços públicos e preservação de áreas verdes com participação de lideranças comunitárias.",
     neighborhood: "Parque dos Girassóis",
@@ -238,6 +243,7 @@ const actionTemplates: Array<
     resolutionImageUrls: afterImageSets[4],
   },
   {
+    title: "Travessia segura em frente à escola",
     description:
       "Apoio voluntário à travessia segura em frente à escola municipal com orientação a motoristas e reforço de sinalização comunitária.",
     neighborhood: "Residencial do Lago",

@@ -5,6 +5,7 @@ export type SolicitationStatus = "not_resolved" | "in_progress" | "resolved";
 export interface SolicitationSummary {
   id: string;
   protocolNumber: string;
+  title: string;
   requestingUserId: string;
   description: string;
   imageUrls: string[];
@@ -137,6 +138,7 @@ const baseSolicitations: Array<
   >
 > = [
   {
+    title: "Lote com mato alto e descarte irregular",
     description:
       "Lote vazio tomado por mato alto, descarte irregular e focos de água parada bloqueando a passagem de pedestres e ciclistas.",
     neighborhood: "Nova Esperança",
@@ -147,6 +149,7 @@ const baseSolicitations: Array<
     resolutionImageUrls: afterImageSets[0],
   },
   {
+    title: "Bueiro aberto em frente à escola",
     description:
       "Bueiro sem tampa em frente à escola municipal, com risco constante para crianças, motociclistas e moradores da rua.",
     neighborhood: "Jardim Primavera",
@@ -157,6 +160,7 @@ const baseSolicitations: Array<
     resolutionImageUrls: afterImageSets[1],
   },
   {
+    title: "Iluminação pública apagada na via",
     description:
       "Iluminação pública apagada em três postes consecutivos, deixando o trecho escuro e inseguro durante a noite.",
     neighborhood: "Vila Aurora",
@@ -166,6 +170,7 @@ const baseSolicitations: Array<
     resolutionImageUrls: afterImageSets[2],
   },
   {
+    title: "Calçada danificada na área da UBS",
     description:
       "Calçada quebrada e inclinada na área da UBS, dificultando o acesso de cadeirantes e idosos ao atendimento.",
     neighborhood: "Centro",
@@ -175,6 +180,7 @@ const baseSolicitations: Array<
     resolutionImageUrls: afterImageSets[3],
   },
   {
+    title: "Acúmulo de lixo orgânico na esquina",
     description:
       "Acúmulo frequente de lixo orgânico em esquina residencial, atraindo insetos, mau cheiro e animais.",
     neighborhood: "Parque dos Girassóis",
@@ -185,6 +191,7 @@ const baseSolicitations: Array<
     resolutionImageUrls: afterImageSets[4],
   },
   {
+    title: "Faixa de pedestres apagada no cruzamento",
     description:
       "Sinalização horizontal quase apagada em cruzamento muito movimentado, com vários relatos de quase acidentes.",
     neighborhood: "Residencial do Lago",

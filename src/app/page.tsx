@@ -55,6 +55,7 @@ export default function Home() {
       const matchesSearch =
         normalizedSearch.length === 0 ||
         [
+          item.title,
           item.description,
           item.neighborhood,
           item.street,
@@ -285,6 +286,7 @@ export default function Home() {
               {filteredSolicitations.map((solicitation) => (
                 <SolicitationCard
                   key={solicitation.id}
+                  title={solicitation.title}
                   requestingUserId={solicitation.requestingUserId}
                   description={solicitation.description}
                   imageUrls={solicitation.imageUrls}

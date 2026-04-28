@@ -31,6 +31,7 @@ export interface SolicitationCardProps
 }
 
 export default function SolicitationCard({
+  title,
   requestingUserId,
   description,
   imageUrls,
@@ -86,7 +87,7 @@ export default function SolicitationCard({
         <div className="relative h-44 overflow-hidden rounded-[1.5rem] bg-neutral-200 dark:bg-white/5 sm:h-52 xl:h-28 xl:w-[136px]">
           <Image
             src={mainImageUrl}
-            alt={`Imagem de ${titleLabel.toLowerCase()} em ${street}`}
+            alt={`Imagem de ${title.toLowerCase()} em ${street}`}
             fill
             sizes="(min-width: 1280px) 136px, (min-width: 640px) 50vw, 100vw"
             className="object-cover"
@@ -95,22 +96,27 @@ export default function SolicitationCard({
 
         <div className="flex min-w-0 flex-col gap-4">
           <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-3">
-              <h3 className="text-lg font-black tracking-tight">{titleLabel}</h3>
-              <span
-                className={clsx(
-                  "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold",
-                  statusConfig.badgeClassName
-                )}
-              >
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+                {titleLabel}
+              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <h3 className="text-lg font-black tracking-tight">{title}</h3>
                 <span
                   className={clsx(
-                    "h-2.5 w-2.5 rounded-full",
-                    statusConfig.dotClassName
+                    "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold",
+                    statusConfig.badgeClassName
                   )}
-                />
-                {statusLabel ?? statusConfig.label}
-              </span>
+                >
+                  <span
+                    className={clsx(
+                      "h-2.5 w-2.5 rounded-full",
+                      statusConfig.dotClassName
+                    )}
+                  />
+                  {statusLabel ?? statusConfig.label}
+                </span>
+              </div>
             </div>
 
             <p className="text-sm leading-6 text-foreground/75 sm:text-[0.95rem]">

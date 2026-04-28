@@ -104,6 +104,7 @@ export default function CitizenLegalActionsPage() {
             {actions.map((action) => (
               <SolicitationCard
                 key={action.id}
+                title={action.title}
                 requestingUserId={action.requestingUserId}
                 description={action.description}
                 imageUrls={action.imageUrls}
