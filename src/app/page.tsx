@@ -7,6 +7,7 @@ import {
   ClockCountdownIcon,
 } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Button,
   PaginationList,
@@ -23,11 +24,14 @@ import {
   statusOptions,
   type SolicitationStatus,
 } from "./constants/solicitations";
+import { buildScopedHref } from "./lib/site-paths";
 
 const formatCountLabel = (value: number, singular: string, plural: string) =>
   `${value} ${value === 1 ? singular : plural}`;
 
 export default function Home() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState<
@@ -145,6 +149,9 @@ export default function Home() {
             <Button
               type="button"
               label="Cadastrar situação"
+              onClick={() =>
+                router.push(buildScopedHref(pathname, "/cadastrar-situacao"))
+              }
               className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 sm:w-auto"
             />
           </div>

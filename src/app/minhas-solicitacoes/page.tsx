@@ -430,6 +430,9 @@ export default function MySolicitationsPage() {
             <Button
               type="button"
               label="Cadastrar situação"
+              onClick={() =>
+                router.push(buildScopedHref(pathname, "/cadastrar-situacao"))
+              }
               className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 sm:w-auto"
             />
           </div>
