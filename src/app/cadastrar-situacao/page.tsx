@@ -305,7 +305,7 @@ export default function RegisterSolicitationPage() {
               </div>
             </div>
 
-            <div className="inline-flex items-center rounded-full bg-foreground/5 px-5 py-3 text-sm font-black text-foreground dark:bg-white/5">
+            <div className="inline-flex items-center rounded-sm bg-foreground/5 px-5 py-3 text-sm font-medium text-foreground dark:bg-white/5">
               Passo {currentStep} de {registerSteps.length}
             </div>
           </div>
@@ -317,9 +317,9 @@ export default function RegisterSolicitationPage() {
                 className={[
                   "rounded-[1.4rem] border px-4 py-3 transition",
                   step.id === currentStep
-                    ? "border-emerald-500/40 bg-emerald-500/10 text-foreground"
+                    ? "border-primary-500/40 bg-primary-500/10 text-foreground"
                     : step.id < currentStep
-                    ? "border-sky-500/30 bg-sky-500/10 text-foreground"
+                    ? "border-foreground/20 bg-foreground/5 text-foreground"
                     : "border-border-card/70 bg-background/80 text-foreground/60 dark:bg-white/[0.03]",
                 ].join(" ")}
               >
@@ -451,11 +451,11 @@ export default function RegisterSolicitationPage() {
               />
 
               {uploadError ? (
-                <div className="flex items-start gap-3 rounded-[1.4rem] border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-foreground/80">
+                <div className="flex items-start gap-3 rounded-sm border border-alert-500/25 bg-alert-500/10 p-4 text-sm text-foreground/80">
                   <WarningCircleIcon
                     size={20}
                     weight="fill"
-                    className="mt-0.5 shrink-0 text-amber-500"
+                    className="mt-0.5 shrink-0 text-alert-500"
                   />
                   <p>{uploadError}</p>
                 </div>
@@ -499,7 +499,7 @@ export default function RegisterSolicitationPage() {
                   (currentStep === 1 && !isStepOneValid) ||
                   (currentStep === 2 && !isStepTwoValid)
                 }
-                className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-lime-400 !text-zinc-950 hover:!bg-lime-300 disabled:cursor-not-allowed disabled:!bg-lime-400/60"
+                className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 disabled:cursor-not-allowed disabled:!bg-primary-500/60"
               />
             ) : (
               <Button
@@ -507,7 +507,7 @@ export default function RegisterSolicitationPage() {
                 label={isUploadingImages ? "Processando..." : "Publicar"}
                 onClick={handlePublish}
                 disabled={!isStepThreeValid || isUploadingImages}
-                className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-lime-400 !text-zinc-950 hover:!bg-lime-300 disabled:cursor-not-allowed disabled:!bg-lime-400/60"
+                className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 disabled:cursor-not-allowed disabled:!bg-primary-500/60"
               />
             )}
           </div>

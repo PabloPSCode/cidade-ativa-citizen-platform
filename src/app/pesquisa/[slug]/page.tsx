@@ -113,10 +113,10 @@ export default function Home() {
   return (
     <main className="w-full bg-background text-foreground">
       {/* Top categories */}
-      <div className="w-screen bg-gray-100 dark:bg-gray-900 px-2">
+      <div className="w-screen border-b border-border-card bg-bg-card px-2">
         <TopMenu
           menuItems={topMenuItems}
-          className="w-full bg-gray-100 dark:bg-gray-900 text-background"
+          className="w-full bg-bg-card text-foreground"
           itemClassName="text-sm font-semibold text-foreground hover:text-foreground"
         />
       </div>

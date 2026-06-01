@@ -32,15 +32,15 @@ export default function Button({
   return (
     <button
       className={clsx(
-        `flex items-center justify-center w-fit px-3 py-2 sm:px-4 sm:py-3 rounded-md  ${
+        `flex items-center justify-center w-fit px-3 py-2 sm:px-4 sm:py-3 rounded-sm font-medium transition-colors duration-300 ${
           variant === "filled"
-            ? "bg-primary-500 text-white"
+            ? "bg-primary-500 text-white hover:bg-primary-600"
             : variant === "outlined"
-            ? "border border-primary-500 text-primary-500"
+            ? "border border-primary-500 text-primary-600 hover:bg-primary-500/10 dark:text-primary-300"
             : variant === "alert"
-            ? "bg-amber-500 text-white"
+            ? "bg-alert-500 text-white hover:bg-alert-600"
             : variant === "destructive"
-            ? "bg-destructive-500 text-white"
+            ? "bg-destructive-500 text-white hover:bg-destructive-600"
             : ""
         }`,
         className
@@ -67,7 +67,7 @@ export default function Button({
           )}
         </div>
       ) : (
-        <span className="opacity-100 text-xs sm:text-sm">{label}</span>
+        <span className="opacity-100 text-xs font-medium sm:text-sm">{label}</span>
       )}
     </button>
   );

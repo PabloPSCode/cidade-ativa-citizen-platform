@@ -55,8 +55,8 @@ const FileInput = forwardRef<HTMLInputElement, FileInputProps>(
           type="button"
           disabled={disabled}
           className={clsx(
-            "flex h-[3rem] w-full items-center justify-center rounded-lg border text-xs font-medium transition sm:text-sm",
-            "border-border-card/70 bg-background text-foreground",
+            "flex h-[3rem] w-full items-center justify-center rounded-sm border text-xs font-medium transition sm:text-sm",
+            "border-border-card bg-background text-foreground",
             "hover:bg-foreground/5 disabled:cursor-not-allowed disabled:opacity-60",
             buttonClassName
           )}

@@ -55,7 +55,7 @@ const SubMenu = ({ subItems, subItemClassName }: SubMenuProps) => {
         // Posicionamento: colado no item pai (sem gap que causava “buraco”)
         "absolute left-0 top-full min-w-[220px] z-50",
         // Visual padrão (dark-mode via tokens)
-        "rounded-md border border-border-card bg-bg-card text-foreground shadow-lg p-2",
+        "rounded-sm border border-border-card bg-bg-card p-2 text-foreground",
         // Oculto por padrão
         "opacity-0 translate-y-1 pointer-events-none",
         "transition duration-150 ease-out",
@@ -146,7 +146,7 @@ export default function TopMenu({
                     onClick={handleNavigate(item.href, item.onSeeItem)}
                     className={clsx(
                       "inline-flex items-center gap-2 rounded-md px-2 py-1",
-                      "hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/40"
+                      "hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/40"
                     )}
                     aria-haspopup={hasSubmenu ? "true" : undefined}
                     aria-expanded={hasSubmenu ? "false" : undefined}
@@ -160,7 +160,7 @@ export default function TopMenu({
                     onClick={handleNavigate(undefined, item.onSeeItem)}
                     className={clsx(
                       "inline-flex items-center gap-2 rounded-md px-2 py-1",
-                      "hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/40"
+                      "hover:bg-foreground/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/40"
                     )}
                     aria-haspopup={hasSubmenu ? "true" : undefined}
                     aria-expanded={hasSubmenu ? "false" : undefined}

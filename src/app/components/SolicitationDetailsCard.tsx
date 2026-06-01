@@ -231,7 +231,7 @@ export default function SolicitationDetailsCard({
             address={mapAddress}
             aspect="4:3"
             minHeight={300}
-            borderRadius={22}
+            borderRadius={4}
             containerClassName="mt-4"
             title={`${mapTitlePrefix} ${protocolNumber}`}
           />

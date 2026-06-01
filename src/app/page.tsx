@@ -121,7 +121,7 @@ export default function Home() {
         >
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-3 rounded-full bg-background/90 px-4 py-2 text-sm font-semibold text-foreground/80 shadow-sm">
+              <div className="inline-flex items-center gap-3 rounded-sm bg-background px-4 py-2 text-sm font-medium text-foreground/80">
                 <BuildingsIcon size={22} weight="fill" />
                 <span>Solicitações gerais</span>
               </div>
@@ -152,7 +152,7 @@ export default function Home() {
               onClick={() =>
                 router.push(buildScopedHref(pathname, "/cadastrar-situacao"))
               }
-              className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 sm:w-auto"
+              className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 sm:w-auto"
             />
           </div>
 
@@ -179,9 +179,9 @@ export default function Home() {
               </p>
             </article>
 
-            <article className="rounded-[1.75rem] border border-amber-500/20 bg-bg-card p-5 shadow-sm">
+            <article className="rounded-sm border border-border-card bg-bg-card p-5 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-amber-500/15 p-3 text-amber-600 dark:text-amber-300">
+                <div className="rounded-sm bg-foreground/5 p-3 text-alert-700 dark:bg-white/5 dark:text-alert-100">
                   <ClockCountdownIcon size={22} weight="fill" />
                 </div>
                 <div className="space-y-1">
@@ -198,9 +198,9 @@ export default function Home() {
               </p>
             </article>
 
-            <article className="rounded-[1.75rem] border border-sky-500/20 bg-bg-card p-5 shadow-sm">
+            <article className="rounded-sm border border-border-card bg-bg-card p-5 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-sky-500/15 p-3 text-sky-600 dark:text-sky-300">
+                <div className="rounded-sm bg-foreground/5 p-3 text-primary-600 dark:bg-white/5 dark:text-primary-300">
                   <BuildingsIcon size={22} weight="fill" />
                 </div>
                 <div className="space-y-1">
@@ -217,9 +217,9 @@ export default function Home() {
               </p>
             </article>
 
-            <article className="rounded-[1.75rem] border border-emerald-500/20 bg-bg-card p-5 shadow-sm">
+            <article className="rounded-sm border border-border-card bg-bg-card p-5 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-emerald-500/15 p-3 text-emerald-600 dark:text-emerald-300">
+                <div className="rounded-sm bg-foreground/5 p-3 text-primary-600 dark:bg-white/5 dark:text-primary-300">
                   <CheckCircleIcon size={22} weight="fill" />
                 </div>
                 <div className="space-y-1">
@@ -284,7 +284,7 @@ export default function Home() {
               nextButtonLabel="Próximo"
               previousButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               nextButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
-              pageNumberClassName="rounded-full text-sm font-semibold"
+              pageNumberClassName="rounded-sm text-sm font-medium"
               activePageNumberClassName="border border-foreground/15 bg-foreground text-background"
               inactivePageNumberClassName="border border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5"
               showItemsPerPageSelect={false}
@@ -316,7 +316,7 @@ export default function Home() {
                 type="button"
                 label="Limpar filtros"
                 onClick={handleResetFilters}
-                className="mx-auto mt-6 rounded-2xl px-5 py-3 text-sm font-semibold !bg-emerald-600 hover:!bg-emerald-500"
+                className="mx-auto mt-6 rounded-sm px-5 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600"
               />
             </div>
           )}

@@ -79,7 +79,7 @@ export default function SolicitationCard({
       className={clsx(
         "solicitation-card Container rounded-[2rem] border border-border-card/70 bg-bg-card p-4 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)] transition sm:p-5 xl:p-6",
         isInteractive &&
-          "cursor-pointer hover:-translate-y-0.5 hover:border-foreground/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50",
+          "cursor-pointer hover:border-foreground/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/40",
         className
       )}
     >
@@ -125,11 +125,11 @@ export default function SolicitationCard({
           </div>
 
           <div className="flex flex-wrap gap-2.5 text-xs font-medium text-foreground/60 sm:text-sm">
-            <span className="inline-flex items-center gap-2 rounded-full bg-foreground/5 px-3 py-2 dark:bg-white/5">
+            <span className="inline-flex items-center gap-2 rounded-sm bg-foreground/5 px-3 py-2 dark:bg-white/5">
               <MapPinLineIcon size={16} weight="fill" />
               {street}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-foreground/5 px-3 py-2 dark:bg-white/5">
+            <span className="inline-flex items-center gap-2 rounded-sm bg-foreground/5 px-3 py-2 dark:bg-white/5">
               <SpinnerGapIcon size={16} weight="bold" />
               {neighborhood}
             </span>
@@ -214,7 +214,7 @@ export default function SolicitationCard({
                 event.stopPropagation();
                 onDelete();
               }}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-rose-200 bg-rose-500/10 text-rose-600 transition hover:bg-rose-500/15 dark:border-rose-400/20 dark:text-rose-300"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-sm border border-destructive-500/25 bg-destructive-500/10 text-destructive-600 transition hover:bg-destructive-500/15 dark:text-destructive-300"
             >
               <TrashIcon size={20} weight="fill" />
             </button>
@@ -231,7 +231,7 @@ export default function SolicitationCard({
                   }
                 : undefined
             }
-            className="flex-1 justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 xl:min-w-[10rem]"
+            className="flex-1 justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 xl:min-w-[10rem]"
           />
         </div>
       </div>

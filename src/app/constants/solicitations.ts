@@ -32,21 +32,21 @@ export const solicitationStatusMap: Record<
 > = {
   not_resolved: {
     label: "Não resolvido",
-    dotClassName: "bg-amber-400",
+    dotClassName: "bg-alert-500",
     badgeClassName:
-      "bg-amber-500/15 text-amber-700 dark:bg-amber-400/15 dark:text-amber-200",
+      "border border-alert-500/30 bg-alert-500/10 text-alert-700 dark:bg-alert-400/15 dark:text-alert-100",
   },
   in_progress: {
     label: "Em andamento",
-    dotClassName: "bg-sky-400",
+    dotClassName: "bg-primary-500",
     badgeClassName:
-      "bg-sky-500/15 text-sky-700 dark:bg-sky-400/15 dark:text-sky-200",
+      "border border-primary-500/30 bg-primary-500/10 text-primary-700 dark:bg-primary-400/15 dark:text-primary-100",
   },
   resolved: {
     label: "Resolvido",
-    dotClassName: "bg-emerald-500",
+    dotClassName: "bg-foreground/55",
     badgeClassName:
-      "bg-emerald-500/15 text-emerald-700 dark:bg-emerald-400/15 dark:text-emerald-200",
+      "border border-foreground/15 bg-foreground/10 text-foreground dark:bg-white/10 dark:text-white",
   },
 };
 

@@ -59,10 +59,10 @@ const TextInput = forwardRef<HTMLInputElement, TextInputProps>(
             errorMessage ? errorId : helperText ? helpId : undefined
           }
           className={clsx(
-            "flex w-full h-10 rounded-md bg-background text-foreground placeholder:text-foreground/50 text-sm sm:text-base",
-            "border border-gray-300 dark:border-gray-600",
+            "flex w-full h-10 rounded-sm bg-background text-foreground placeholder:text-foreground/55 text-sm sm:text-base",
+            "border border-border-card",
             "outline-none transition",
-            "focus:border-primary-600 focus:ring-2 focus:ring-primary-300/30",
+            "focus:border-primary-500 focus:ring-2 focus:ring-primary-500/25",
             "disabled:cursor-not-allowed disabled:opacity-70",
             "px-2 py-1 my-1",
             errorMessage &&

@@ -13,48 +13,113 @@
 @import "react-responsive-modal/styles.css";
 
 :root {
-  --color-primary-50: #fef3c7;
-  --color-primary-100: #fde68a;
-  --color-primary-200: #fcd34d;
-  --color-primary-300: #fbbf24;
-  --color-primary-400: #f59e0b;
-  --color-primary-500: #d97706;
-  --color-primary-600: #b45309;
-  --color-primary-700: #92400e;
-  --color-primary-800: #78350f;
-  --color-primary-900: #45141d;
-  --color-primary-950: #3b0e14;
+  --color-primary-50: #eef3ff;
+  --color-primary-100: #dce7ff;
+  --color-primary-200: #b9ceff;
+  --color-primary-300: #8daeff;
+  --color-primary-400: #6389ef;
+  --color-primary-500: #3e6ae1;
+  --color-primary-600: #3457b2;
+  --color-primary-700: #294689;
+  --color-primary-800: #203568;
+  --color-primary-900: #17264a;
+  --color-primary-950: #10192f;
 
-  --color-secondary-50: #fffdea;
-  --color-secondary-100: #fef9c3;
-  --color-secondary-200: #fef08a;
-  --color-secondary-300: #fde047;
-  --color-secondary-400: #facc15;
-  --color-secondary-500: #ffcc29;
-  --color-secondary-600: #e6b800;
-  --color-secondary-700: #cca300;
-  --color-secondary-800: #997a00;
-  --color-secondary-900: #665200;
-  --color-secondary-950: #332900;
+  --color-secondary-50: #ffffff;
+  --color-secondary-100: #f8f8f8;
+  --color-secondary-200: #f4f4f4;
+  --color-secondary-300: #eeeeee;
+  --color-secondary-400: #d0d1d2;
+  --color-secondary-500: #8e8e8e;
+  --color-secondary-600: #5c5e62;
+  --color-secondary-700: #393c41;
+  --color-secondary-800: #24272c;
+  --color-secondary-900: #171a20;
+  --color-secondary-950: #0b0d10;
 
-  --color-background: #f6f5f7;
-  --color-foreground: #1f1f1f;
+  --color-tertiary-50: #f8f8f8;
+  --color-tertiary-100: #f4f4f4;
+  --color-tertiary-200: #eeeeee;
+  --color-tertiary-300: #d0d1d2;
+  --color-tertiary-400: #8e8e8e;
+  --color-tertiary-500: #5c5e62;
+  --color-tertiary-600: #393c41;
+  --color-tertiary-700: #24272c;
+  --color-tertiary-800: #171a20;
+  --color-tertiary-900: #101216;
+  --color-tertiary-950: #07080a;
+
+  --color-info-50: #eef3ff;
+  --color-info-100: #dce7ff;
+  --color-info-200: #b9ceff;
+  --color-info-300: #8daeff;
+  --color-info-400: #6389ef;
+  --color-info-500: #3e6ae1;
+  --color-info-600: #3457b2;
+  --color-info-700: #294689;
+  --color-info-800: #203568;
+  --color-info-900: #17264a;
+  --color-info-950: #10192f;
+
+  --color-success-50: #eefdf5;
+  --color-success-100: #d7f8e6;
+  --color-success-200: #b2eccd;
+  --color-success-300: #7edbad;
+  --color-success-400: #38bf83;
+  --color-success-500: #129962;
+  --color-success-600: #0c7a4d;
+  --color-success-700: #095f3d;
+  --color-success-800: #074a30;
+  --color-success-900: #053522;
+  --color-success-950: #031e13;
+
+  --color-alert-50: #fff8eb;
+  --color-alert-100: #ffedc7;
+  --color-alert-200: #ffd88a;
+  --color-alert-300: #ffbd4a;
+  --color-alert-400: #f59b18;
+  --color-alert-500: #c7790a;
+  --color-alert-600: #9d5e08;
+  --color-alert-700: #784806;
+  --color-alert-800: #5a3504;
+  --color-alert-900: #3a2203;
+  --color-alert-950: #211301;
+
+  --color-destructive-50: #fff1f3;
+  --color-destructive-100: #ffe0e5;
+  --color-destructive-200: #ffc0cb;
+  --color-destructive-300: #ff91a5;
+  --color-destructive-400: #f85f7c;
+  --color-destructive-500: #d92d4a;
+  --color-destructive-600: #b71f38;
+  --color-destructive-700: #91172c;
+  --color-destructive-800: #6f1222;
+  --color-destructive-900: #4a0b16;
+  --color-destructive-950: #2b060d;
+
+  --color-background: #ffffff;
+  --color-foreground: #171a20;
   --color-bg-card: #ffffff;
-  --color-border-card: #ffffff;
+  --color-border-card: #d0d1d2;
+  --color-surface-muted: #f4f4f4;
+  --color-shell-border: rgba(23, 26, 32, 0.12);
+  --color-shell-shadow: none;
+  --color-header-bg: rgba(255, 255, 255, 0.94);
+  --radius-sm: 0.25rem;
 
-  --font-primary: var(--font-montserrat), ui-sans-serif, system-ui,
-    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-  --font-secondary: var(--font-montserrat), ui-sans-serif, system-ui,
-    -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
-    "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --font-primary: "Universal Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-secondary: "Universal Sans Display", "Universal Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 :root.dark {
-  --color-background: #111111;
-  --color-foreground: #fffefc;
-  --color-bg-card: #222222;
-  --color-border-card: #444444;
+  --color-background: #0b0d10;
+  --color-foreground: #f4f4f4;
+  --color-bg-card: #171a20;
+  --color-border-card: #393c41;
+  --color-surface-muted: #111419;
+  --color-shell-border: rgba(255, 255, 255, 0.14);
+  --color-shell-shadow: none;
+  --color-header-bg: rgba(11, 13, 16, 0.94);
 }
 
 * {
@@ -64,11 +129,17 @@
 html {
   scroll-behavior: smooth;
   font-family: var(--font-primary);
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
 }
 
 body {
   color: var(--color-foreground);
   background: var(--color-background);
+  min-height: 100vh;
 }
 
 h1,
@@ -92,6 +163,16 @@ button:disabled {
   cursor: auto;
 }
 
+::selection {
+  background: color-mix(in srgb, var(--color-primary-500) 25%, transparent);
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--color-primary-500);
+}
+
 .react-datepicker__current-month,
 .react-datepicker__day-name {
   @apply capitalize;
@@ -100,6 +181,72 @@ button:disabled {
 @layer utilities {
   .rc-slider-disabled {
     background-color: var(--color-background) !important;
+  }
+}
+
+@layer components {
+  .ds-page {
+    @apply min-h-screen bg-background text-foreground;
+  }
+
+  .ds-section {
+    @apply items-stretch gap-8 !px-4 !py-8 sm:!px-6 lg:!px-8 lg:!py-10;
+  }
+
+  .ds-hero-card {
+    @apply rounded-sm border border-border-card bg-bg-card p-5 backdrop-blur-sm sm:p-7;
+  }
+
+  .ds-content-card {
+    @apply rounded-sm border border-border-card bg-bg-card;
+  }
+
+  .ds-soft-panel {
+    @apply rounded-sm border border-border-card bg-background p-5 dark:bg-white/[0.03];
+  }
+
+  .ds-chip {
+    @apply rounded-sm bg-background px-4 py-2 text-sm font-medium text-foreground/80;
+  }
+
+  .ds-pagination-nav {
+    @apply rounded-sm border border-border-card bg-bg-card px-4 py-4 sm:px-5;
+  }
+
+  .ds-empty-state {
+    @apply rounded-sm border border-dashed border-border-card bg-bg-card;
+  }
+
+  .ds-btn-primary {
+    @apply rounded-sm px-5 py-3 text-sm font-medium !bg-primary-500 !text-white transition hover:!bg-primary-600;
+  }
+
+  .ds-btn-neutral {
+    @apply rounded-sm border border-foreground/15 bg-background px-6 py-3 text-sm font-medium !text-foreground transition hover:bg-foreground/5;
+  }
+
+  .ds-top-bar {
+    border-color: var(--color-shell-border);
+    background: var(--color-header-bg);
+    @apply border-b backdrop-blur-md;
+  }
+}
+
+@layer utilities {
+  :is(section, article, aside, nav, div, input, textarea, select, button)[class*="rounded-"]:not([class*="rounded-full"]) {
+    border-radius: var(--radius-sm) !important;
+  }
+
+  .shadow-none,
+  .shadow,
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl,
+  .shadow-inner,
+  [class*="shadow-["] {
+    box-shadow: none !important;
   }
 }
 

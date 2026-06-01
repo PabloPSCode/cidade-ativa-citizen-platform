@@ -117,7 +117,7 @@ export default function Breadcrumb({ className }: BreadcrumbProps) {
   return (
     <div
       className={clsx(
-        "sticky top-[7.75rem] z-40 border-b border-black/5 bg-white/92 backdrop-blur-md dark:border-white/10 dark:bg-[#101112]/92 md:top-20",
+        "sticky top-[7.75rem] z-40 border-b border-border-card bg-bg-card/95 backdrop-blur-md md:top-20",
         className
       )}
     >
@@ -136,7 +136,7 @@ export default function Breadcrumb({ className }: BreadcrumbProps) {
                 ) : null}
 
                 {item.current ? (
-                  <span className="inline-flex min-w-0 items-center gap-2 rounded-full bg-foreground/5 px-3 py-1.5 font-semibold text-foreground dark:bg-white/5">
+                  <span className="inline-flex min-w-0 items-center gap-2 rounded-sm bg-foreground/5 px-3 py-1.5 font-medium text-foreground dark:bg-white/5">
                     {index === 0 ? (
                       <HouseLineIcon
                         size={15}
@@ -150,7 +150,7 @@ export default function Breadcrumb({ className }: BreadcrumbProps) {
                 ) : (
                   <Link
                     href={item.href}
-                    className="inline-flex min-w-0 items-center gap-2 rounded-full px-3 py-1.5 font-medium transition hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/5"
+                    className="inline-flex min-w-0 items-center gap-2 rounded-sm px-3 py-1.5 font-medium transition hover:bg-foreground/5 hover:text-foreground dark:hover:bg-white/5"
                   >
                     {index === 0 ? (
                       <HouseLineIcon

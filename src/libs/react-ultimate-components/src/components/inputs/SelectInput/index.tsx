@@ -108,16 +108,16 @@ const SelectInput = forwardRef<SelectInstance<Option>, SelectInputProps>(
         ...base,
         minHeight: 40,
         height: 40,
-        borderRadius: 8,
-        backgroundColor: "var(--color-bg, transparent)",
+        borderRadius: 4,
+        backgroundColor: "var(--color-background, transparent)",
         borderColor: state.isFocused
-          ? "var(--color-primary-600, #2563eb)"
-          : "var(--color-border, rgba(107,114,128,.6))",
+          ? "var(--color-primary-500, #3e6ae1)"
+          : "var(--color-border-card, rgba(107,114,128,.6))",
         boxShadow: state.isFocused
-          ? "0 0 0 2px color-mix(in srgb, var(--color-primary-400, #60a5fa) 40%, transparent)"
+          ? "0 0 0 2px color-mix(in srgb, var(--color-primary-500, #3e6ae1) 25%, transparent)"
           : "none",
         ":hover": {
-          borderColor: "var(--color-primary-600, #2563eb)",
+          borderColor: "var(--color-primary-500, #3e6ae1)",
         },
         // tipografia responsiva
         fontSize: "14px",
@@ -141,22 +141,22 @@ const SelectInput = forwardRef<SelectInstance<Option>, SelectInputProps>(
       }),
       menu: (base) => ({
         ...base,
-        backgroundColor: "var(--color-card, white)",
-        border: "1px solid var(--color-border, rgba(107,114,128,.6))",
-        borderRadius: 8,
+        backgroundColor: "var(--color-bg-card, white)",
+        border: "1px solid var(--color-border-card, rgba(107,114,128,.6))",
+        borderRadius: 4,
         overflow: "hidden",
       }),
       option: (base, state) => ({
         ...base,
         fontSize: "14px",
         backgroundColor: state.isSelected
-          ? "#f4f3f3"
+          ? "var(--color-primary-500, #3e6ae1)"
           : state.isFocused
-          ? "#ebebeb"
-          : "#f3f3f3",
-        color: "black",
+          ? "color-mix(in srgb, var(--color-primary-500, #3e6ae1) 12%, var(--color-bg-card, #ffffff))"
+          : "var(--color-bg-card, #ffffff)",
+        color: state.isSelected ? "#ffffff" : "var(--color-foreground, #111827)",
         ":active": {
-          backgroundColor: "#ebebeb",
+          backgroundColor: "color-mix(in srgb, var(--color-primary-500, #3e6ae1) 20%, var(--color-bg-card, #ffffff))",
         },
       }),
       indicatorsContainer: (base) => ({
@@ -168,12 +168,12 @@ const SelectInput = forwardRef<SelectInstance<Option>, SelectInputProps>(
         transition: "transform .2s",
         transform: state.selectProps.menuIsOpen ? "rotate(180deg)" : undefined,
         color: "var(--color-foreground, #111827)",
-        ":hover": { color: "var(--color-primary-600, #2563eb)" },
+        ":hover": { color: "var(--color-primary-500, #3e6ae1)" },
       }),
       clearIndicator: (base) => ({
         ...base,
         color: "var(--color-foreground, #111827)",
-        ":hover": { color: "var(--color-primary-600, #2563eb)" },
+        ":hover": { color: "var(--color-primary-500, #3e6ae1)" },
       }),
       menuPortal: (base) => ({
         ...base,
@@ -200,7 +200,7 @@ const SelectInput = forwardRef<SelectInstance<Option>, SelectInputProps>(
 
         <div
           className={clsx(
-            "rounded-md bg-background",
+            "rounded-sm bg-background",
             isDisabled && "opacity-70 cursor-not-allowed",
             errorMessage && "ring-1 ring-red-500 focus-within:ring-red-400/40"
           )}

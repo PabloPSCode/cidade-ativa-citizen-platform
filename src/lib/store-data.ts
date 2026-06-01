@@ -70,9 +70,10 @@ const DEFAULT_STORE_DATA: StoreData = {
     companyLogoUrl: null,
   },
   design: {
-    primaryColor: "#2700dd",
+    primaryColor: "#3E6AE1",
     secondaryColor: "#f4f4f4",
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif",
+    fontFamily:
+      '"Universal Sans Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   },
   legal: {
     cnpj: null,

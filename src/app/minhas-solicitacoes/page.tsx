@@ -402,7 +402,7 @@ export default function MySolicitationsPage() {
         <section className="flex flex-col gap-6 rounded-[2rem] border border-border-card/70 bg-white/70 p-5 shadow-[0_32px_80px_-52px_rgba(15,23,42,0.45)] backdrop-blur-sm dark:bg-bg-card/80 sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-3 rounded-full bg-background/90 px-4 py-2 text-sm font-semibold text-foreground/80 shadow-sm">
+              <div className="inline-flex items-center gap-3 rounded-sm bg-background px-4 py-2 text-sm font-medium text-foreground/80">
                 <UserCircleIcon size={22} weight="fill" />
                 <span>Minhas solicitações</span>
               </div>
@@ -433,7 +433,7 @@ export default function MySolicitationsPage() {
               onClick={() =>
                 router.push(buildScopedHref(pathname, "/cadastrar-situacao"))
               }
-              className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500 sm:w-auto"
+              className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 sm:w-auto"
             />
           </div>
         </section>
@@ -484,7 +484,7 @@ export default function MySolicitationsPage() {
               nextButtonLabel="Próximo"
               previousButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               nextButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
-              pageNumberClassName="rounded-full text-sm font-semibold"
+              pageNumberClassName="rounded-sm text-sm font-medium"
               activePageNumberClassName="border border-foreground/15 bg-foreground text-background"
               inactivePageNumberClassName="border border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5"
               showItemsPerPageSelect={false}
@@ -521,7 +521,7 @@ export default function MySolicitationsPage() {
                 type="button"
                 label="Limpar filtros"
                 onClick={handleResetFilters}
-                className="mx-auto mt-6 rounded-2xl px-5 py-3 text-sm font-semibold !bg-emerald-600 hover:!bg-emerald-500"
+                className="mx-auto mt-6 rounded-sm px-5 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600"
               />
             </div>
           )}
@@ -542,7 +542,7 @@ export default function MySolicitationsPage() {
         confirmButtonDisabled={isEditFormInvalid || isUploadingPhotos}
         onConfirm={handleSaveSolicitation}
         cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
-        confirmButtonClassName="rounded-2xl bg-emerald-600 px-5 py-3 font-semibold text-white hover:bg-emerald-500"
+        confirmButtonClassName="rounded-sm bg-primary-500 px-5 py-3 font-medium text-white hover:bg-primary-600"
       >
         {editDraft ? (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -712,18 +712,18 @@ export default function MySolicitationsPage() {
         confirmButtonLabel="Remover solicitação"
         onConfirm={handleConfirmDeleteSolicitation}
         cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
-        confirmButtonClassName="rounded-2xl bg-rose-600 px-5 py-3 font-semibold text-white hover:bg-rose-500"
+        confirmButtonClassName="rounded-sm bg-destructive-500 px-5 py-3 font-medium text-white hover:bg-destructive-600"
       >
         {deleteTarget ? (
-          <div className="flex items-start gap-3 rounded-[1.4rem] border border-rose-500/15 bg-rose-500/10 p-4 text-sm text-foreground/80">
+          <div className="flex items-start gap-3 rounded-sm border border-destructive-500/20 bg-destructive-500/10 p-4 text-sm text-foreground/80">
             <WarningCircleIcon
               size={22}
               weight="fill"
-              className="mt-0.5 shrink-0 text-rose-500"
+              className="mt-0.5 shrink-0 text-destructive-500"
             />
             <div className="space-y-2">
               <p className="font-semibold text-foreground">
-                Deseja remover <span className="text-rose-500">{deleteTarget.title}</span>?
+                Deseja remover <span className="text-destructive-500">{deleteTarget.title}</span>?
               </p>
               <p>
                 Depois de confirmar, o item será retirado da listagem de

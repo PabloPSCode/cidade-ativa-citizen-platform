@@ -55,7 +55,7 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/5 bg-white/90 backdrop-blur-md dark:border-white/10 dark:bg-[#111111]/90">
+    <header className="sticky top-0 z-50 border-b border-border-card bg-bg-card/95 backdrop-blur-md dark:bg-bg-card/95">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link
           href={homeHref}
@@ -83,7 +83,7 @@ export default function Header() {
                 key={item.label}
                 href={href}
                 className={clsx(
-                  "inline-flex items-center gap-2 rounded-full px-4 py-3 text-sm font-bold transition",
+                  "inline-flex items-center gap-2 rounded-sm px-4 py-3 text-sm font-medium transition",
                   isActive
                     ? "bg-foreground/8 text-foreground"
                     : "text-foreground/85 hover:bg-foreground/5 hover:text-foreground"
@@ -99,8 +99,8 @@ export default function Header() {
         {hasHydrated ? (
           isAuthenticated && authenticatedUser ? (
             <div className="hidden items-center gap-3 md:flex">
-              <div className="flex items-center gap-3 rounded-[1.4rem] bg-foreground/5 px-3 py-2 dark:bg-white/5">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-fuchsia-300 text-lg font-semibold text-white">
+              <div className="flex items-center gap-3 rounded-sm bg-foreground/5 px-3 py-2 dark:bg-white/5">
+                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary-500 text-lg font-medium text-white">
                   {authenticatedUser.name.charAt(0).toUpperCase()}
                 </span>
                 <div className="min-w-0">
@@ -116,7 +116,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="inline-flex items-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold text-foreground/80 transition hover:bg-foreground/5 hover:text-foreground"
+                className="inline-flex items-center gap-2 rounded-sm px-3 py-3 text-sm font-medium text-foreground/80 transition hover:bg-foreground/5 hover:text-foreground"
               >
                 <SignOutIcon size={20} weight="fill" />
                 <span>Sair</span>
@@ -127,11 +127,11 @@ export default function Header() {
               type="button"
               label="Fazer login"
               onClick={handleLogin}
-              className="rounded-2xl px-5 py-3 text-sm font-bold !bg-lime-400 !text-zinc-950 hover:!bg-lime-300"
+              className="rounded-sm px-5 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600"
             />
           )
         ) : (
-          <div className="hidden h-11 w-32 rounded-2xl bg-foreground/5 md:block dark:bg-white/5" />
+          <div className="hidden h-11 w-32 rounded-sm bg-foreground/5 md:block dark:bg-white/5" />
         )}
       </div>
 
@@ -145,7 +145,7 @@ export default function Header() {
                 <Link
                   key={item.label}
                   href={buildScopedHref(pathname, item.href)}
-                  className="inline-flex shrink-0 items-center gap-2 rounded-full bg-foreground/5 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-foreground/10 dark:bg-white/5 dark:hover:bg-white/10"
+                  className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-foreground/5 px-4 py-2.5 text-sm font-medium text-foreground transition hover:bg-foreground/10 dark:bg-white/5 dark:hover:bg-white/10"
                 >
                   <Icon size={18} weight="fill" />
                   <span>{item.label}</span>
@@ -156,9 +156,9 @@ export default function Header() {
 
           {hasHydrated ? (
             isAuthenticated && authenticatedUser ? (
-              <div className="flex items-center justify-between gap-3 rounded-[1.4rem] bg-foreground/5 px-3 py-3 dark:bg-white/5">
+              <div className="flex items-center justify-between gap-3 rounded-sm bg-foreground/5 px-3 py-3 dark:bg-white/5">
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fuchsia-300 text-lg font-semibold text-white">
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-500 text-lg font-medium text-white">
                     {authenticatedUser.name.charAt(0).toUpperCase()}
                   </span>
                   <div className="min-w-0">
@@ -174,7 +174,7 @@ export default function Header() {
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-bold text-foreground/80 transition hover:bg-foreground/5 hover:text-foreground"
+                  className="inline-flex items-center gap-2 rounded-sm px-3 py-2 text-sm font-medium text-foreground/80 transition hover:bg-foreground/5 hover:text-foreground"
                 >
                   <SignOutIcon size={20} weight="fill" />
                   <span>Sair</span>
@@ -185,7 +185,7 @@ export default function Header() {
                 type="button"
                 label="Fazer login"
                 onClick={handleLogin}
-                className="w-full justify-center rounded-2xl px-5 py-3 text-sm font-bold !bg-lime-400 !text-zinc-950 hover:!bg-lime-300"
+                className="w-full justify-center rounded-sm px-5 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600"
               />
             )
           ) : null}

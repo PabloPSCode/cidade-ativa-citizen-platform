@@ -66,10 +66,10 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
 
         <div
           className={clsx(
-            "flex w-full h-10 items-center rounded-md bg-background text-foreground placeholder:text-foreground/50 text-sm sm:text-base",
-            "border border-gray-300 dark:border-gray-600",
+            "flex w-full h-10 items-center rounded-sm bg-background text-foreground placeholder:text-foreground/55 text-sm sm:text-base",
+            "border border-border-card",
             "outline-none transition",
-            "focus-within:border-primary-600 focus-within:ring-2 focus-within:ring-primary-300/30",
+            "focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-500/25",
             "disabled:cursor-not-allowed disabled:opacity-70",
             errorMessage &&
             "border-red-400 focus-within:border-red-400 focus-within:ring-red-400/40",

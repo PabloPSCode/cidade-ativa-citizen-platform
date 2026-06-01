@@ -130,7 +130,7 @@ export default function ProductCard({
             key={i}
             size="1em"
             weight={filled ? "fill" : "regular"}
-            className={filled ? "text-yellow-400" : "text-foreground/30"}
+            className={filled ? "text-alert-400" : "text-foreground/30"}
           />
         ))}
       </div>
@@ -141,7 +141,7 @@ export default function ProductCard({
     <div
       className={clsx(
         "group flex flex-col rounded-2xl border border-border-card bg-bg-card shadow-sm text-foreground",
-        "p-4 sm:p-5 gap-3 max-w-full w-full transition-transform hover:-translate-y-0.5 hover:shadow-md",
+        "p-4 sm:p-5 gap-3 max-w-full w-full transition-colors hover:border-foreground/20",
         className
       )}
       role="article"
@@ -159,7 +159,7 @@ export default function ProductCard({
             alt={title}
             width={640}
             height={640}
-            className="w-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+            className="w-full object-cover"
             loading="lazy"
             sizes="(min-width: 768px) 33vw, 80vw"
           />
@@ -230,7 +230,7 @@ export default function ProductCard({
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-300/60 cursor-pointer",
             showDeal && dealExpired
               ? "text-background cursor-not-allowed text-white"
-              : "bg-primary-500 text-white"
+              : "bg-primary-500 text-white hover:bg-primary-600"
           )}
           aria-label={`${ctaLabel} - ${title}`}
         >

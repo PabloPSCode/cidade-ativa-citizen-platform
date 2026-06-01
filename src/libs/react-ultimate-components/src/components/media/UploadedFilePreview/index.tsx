@@ -59,7 +59,7 @@ export default function UploadedFilePreview({
   return (
     <section
       className={clsx(
-        "w-full rounded-md border border-foreground/10 bg-background",
+        "w-full rounded-sm border border-foreground/10 bg-background",
         "p-3 sm:p-4",
         containerClassName
       )}
@@ -128,7 +128,7 @@ export default function UploadedFilePreview({
       <div
         className={clsx(
           "w-full",
-          "rounded-lg overflow-hidden",
+          "rounded-sm overflow-hidden",
           mediaClassName
         )}
       >

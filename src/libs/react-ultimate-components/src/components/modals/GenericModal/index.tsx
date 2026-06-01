@@ -111,7 +111,7 @@ export default function GenericModal({
     >
       <div
         className={clsx(
-          "bg-background text-foreground rounded-xl border border-foreground/15 shadow-xl",
+          "rounded-sm border border-border-card bg-bg-card text-foreground",
           "w-full",
           "max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)] overflow-auto",
           sizeMap[size],
@@ -145,7 +145,7 @@ export default function GenericModal({
             <button
               onClick={onClose}
               className={clsx(
-                "px-4 py-2 rounded-md text-white text-xs sm:text-sm bg-red-500",
+                "rounded-sm border border-foreground/15 bg-background px-4 py-2 text-xs text-foreground sm:text-sm",
                 cancelButtonClassName
               )}
             >
@@ -156,7 +156,7 @@ export default function GenericModal({
             <button
               onClick={onConfirm}
               className={clsx(
-                "px-4 py-2 rounded-md text-white text-xs sm:text-sm bg-blue-500",
+                "rounded-sm bg-primary-500 px-4 py-2 text-xs text-white hover:bg-primary-600 sm:text-sm",
                 "disabled:opacity-50",
                 confirmButtonClassName
               )}

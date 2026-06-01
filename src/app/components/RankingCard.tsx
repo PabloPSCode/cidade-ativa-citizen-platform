@@ -25,32 +25,26 @@ const positionStyles: Record<
   }
 > = {
   1: {
-    medalClassName: "bg-amber-400 text-zinc-950",
-    cardClassName:
-      "border-amber-300/40 shadow-[0_28px_64px_-48px_rgba(245,158,11,0.55)]",
-    avatarClassName:
-      "from-fuchsia-300 via-pink-300 to-rose-300 text-white",
+    medalClassName: "bg-primary-500 text-white",
+    cardClassName: "border-primary-500/35",
+    avatarClassName: "bg-primary-500 text-white",
   },
   2: {
-    medalClassName: "bg-slate-200 text-zinc-900",
-    cardClassName:
-      "border-slate-300/50 shadow-[0_28px_64px_-48px_rgba(148,163,184,0.45)]",
-    avatarClassName:
-      "from-fuchsia-300 via-pink-300 to-rose-300 text-white",
+    medalClassName: "bg-foreground/10 text-foreground",
+    cardClassName: "border-border-card",
+    avatarClassName: "bg-secondary-700 text-white dark:bg-white/15",
   },
   3: {
-    medalClassName: "bg-orange-300 text-zinc-950",
-    cardClassName:
-      "border-orange-300/40 shadow-[0_28px_64px_-48px_rgba(251,146,60,0.5)]",
-    avatarClassName:
-      "from-fuchsia-300 via-pink-300 to-rose-300 text-white",
+    medalClassName: "bg-secondary-300 text-secondary-900",
+    cardClassName: "border-border-card",
+    avatarClassName: "bg-secondary-600 text-white",
   },
 };
 
 const fallbackStyle = {
   medalClassName: "",
   cardClassName: "border-border-card/70",
-  avatarClassName: "from-fuchsia-300 via-pink-300 to-rose-300 text-white",
+  avatarClassName: "bg-secondary-700 text-white dark:bg-white/15",
 };
 
 const getInitial = (fullName: string) => fullName.trim().charAt(0).toUpperCase();
@@ -100,7 +94,7 @@ export default function RankingCard({
 
           <div
             className={clsx(
-              "flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-5xl font-light shadow-inner sm:h-24 sm:w-24 sm:text-6xl",
+              "flex h-20 w-20 shrink-0 items-center justify-center rounded-full text-5xl font-light sm:h-24 sm:w-24 sm:text-6xl",
               accentStyle.avatarClassName
             )}
             aria-hidden="true"
@@ -149,7 +143,7 @@ export default function RankingCard({
             label={actionsLabel}
             title="Ver ações cidadãs"
             onClick={actionsHref ? () => router.push(actionsHref) : undefined}
-            className="w-full justify-center rounded-2xl px-6 py-3 text-sm font-bold !bg-emerald-600 hover:!bg-emerald-500"
+            className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600"
           />
         </div>
       </div>

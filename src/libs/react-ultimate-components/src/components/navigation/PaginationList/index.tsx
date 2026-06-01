@@ -133,7 +133,7 @@ export default function ListPagination({
 
       <nav
         className={clsx(
-          "mx-auto mt-8 flex w-full flex-col gap-3 rounded-md bg-background px-2.5 py-1.5 shadow-sm sm:mt-10 sm:px-3 sm:py-2",
+          "mx-auto mt-8 flex w-full flex-col gap-3 rounded-sm bg-background px-2.5 py-1.5 sm:mt-10 sm:px-3 sm:py-2",
           navigationClassName
         )}
         role="navigation"
@@ -148,7 +148,7 @@ export default function ListPagination({
                 disabled={isFirst}
                 aria-label="Primeira página"
                 className={clsx(
-                  "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/20 text-foreground/80",
+                  "inline-flex h-10 w-10 items-center justify-center rounded-sm border border-foreground/20 text-foreground/80",
                   isFirst && "cursor-not-allowed opacity-50"
                 )}
               >
@@ -165,7 +165,7 @@ export default function ListPagination({
                 "inline-flex items-center justify-center rounded-md border border-foreground/20 text-foreground/80",
                 previousButtonLabel
                   ? "min-h-10 px-4"
-                  : "h-10 w-10 rounded-xl",
+                  : "h-10 w-10 rounded-sm",
                 isFirst && "cursor-not-allowed opacity-50",
                 previousButtonClassName
               )}
@@ -188,7 +188,7 @@ export default function ListPagination({
                     className={clsx(
                       "inline-flex h-8 w-8 items-center justify-center text-xs font-medium sm:h-9 sm:w-9 sm:text-sm",
                       active
-                        ? "scale-110 text-primary-600"
+                        ? "text-primary-600"
                         : "bg-background text-foreground",
                       pageNumberClassName,
                       active
@@ -211,7 +211,7 @@ export default function ListPagination({
               aria-label="Próxima página"
               className={clsx(
                 "inline-flex items-center justify-center rounded-md border border-foreground/20 text-foreground/80",
-                nextButtonLabel ? "min-h-10 px-4" : "h-10 w-10 rounded-xl",
+                nextButtonLabel ? "min-h-10 px-4" : "h-10 w-10 rounded-sm",
                 isLast && "cursor-not-allowed opacity-50",
                 nextButtonClassName
               )}
@@ -226,7 +226,7 @@ export default function ListPagination({
                 disabled={isLast}
                 aria-label="Última página"
                 className={clsx(
-                  "inline-flex h-10 w-10 items-center justify-center rounded-xl border border-foreground/20 text-foreground/80",
+                  "inline-flex h-10 w-10 items-center justify-center rounded-sm border border-foreground/20 text-foreground/80",
                   isLast && "cursor-not-allowed opacity-50"
                 )}
               >

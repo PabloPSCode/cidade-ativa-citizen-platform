@@ -27,7 +27,7 @@ export default function Footer() {
   return (
     <footer
       id="cidadao-legal"
-      className="border-t border-black/5 bg-white text-foreground dark:border-white/10 dark:bg-[#0f0f10]"
+      className="border-t border-border-card bg-bg-card text-foreground"
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_0.9fr_0.9fr_1.1fr]">
@@ -48,7 +48,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-sm font-black uppercase tracking-[0.18em] text-slate-400">
+            <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-foreground/45">
               Navegue
             </h2>
             <ul className="space-y-3 text-sm text-foreground/75">
@@ -66,7 +66,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-sm font-black uppercase tracking-[0.18em] text-slate-400">
+            <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-foreground/45">
               Termos e políticas
             </h2>
             <ul className="space-y-3 text-sm text-foreground/75">
@@ -84,7 +84,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-sm font-black uppercase tracking-[0.18em] text-slate-400">
+            <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-foreground/45">
               Telefones úteis
             </h2>
             <ul className="grid gap-3 text-sm text-foreground/80">
@@ -95,7 +95,7 @@ export default function Footer() {
                     className="flex items-center justify-between gap-4 rounded-2xl border border-black/5 bg-background/60 px-4 py-3 transition hover:border-black/10 hover:bg-background dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
                   >
                     <span className="font-medium">{item.label}</span>
-                    <span className="rounded-full bg-foreground/5 px-3 py-1 font-bold text-foreground dark:bg-white/10">
+                    <span className="rounded-sm bg-foreground/5 px-3 py-1 font-medium text-foreground dark:bg-white/10">
                       {item.phone}
                     </span>
                   </Link>
@@ -105,7 +105,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-slate-200 pt-6 text-sm text-foreground/65 dark:border-white/10">
+        <div className="border-t border-border-card pt-6 text-sm text-foreground/65">
           <p>2026, Desenvolvido por PLS Sistemas</p>
         </div>
       </div>

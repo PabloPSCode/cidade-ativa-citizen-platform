@@ -60,12 +60,12 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
         <div className={clsx("w-full", containerClassName)}>
           <div
             className={clsx(
-              "flex w-full items-center gap-3 rounded-[1.85rem] border border-border-card/70 bg-bg-card p-3 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)]",
+              "flex w-full items-center gap-3 rounded-sm border border-border-card bg-bg-card p-3",
               disabled && "cursor-not-allowed opacity-70",
               className
             )}
           >
-            <div className="flex min-w-0 flex-1 items-center rounded-[1.3rem] bg-black/[0.04] px-4 py-3 dark:bg-white/[0.06]">
+            <div className="flex min-w-0 flex-1 items-center rounded-sm bg-background px-4 py-3 dark:bg-white/[0.06]">
               <input
                 id={inputId}
                 ref={ref}
@@ -88,13 +88,13 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
                   setSearch("");
                   onCancelSearch?.();
                 }}
-                className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-foreground text-background transition hover:opacity-90"
+                className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary-500 text-white transition hover:bg-primary-600"
                 aria-label="Limpar pesquisa"
               >
                 <XIcon className="text-lg sm:text-xl" />
               </button>
             ) : (
-              <span className="flex h-12 w-12 items-center justify-center rounded-[1rem] bg-foreground text-background">
+              <span className="flex h-12 w-12 items-center justify-center rounded-sm bg-primary-500 text-white">
                 <MagnifyingGlassIcon className="text-xl sm:text-2xl" />
               </span>
             )}
@@ -107,8 +107,8 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
       <div className={clsx("w-full", containerClassName)}>
         <div
           className={clsx(
-            "flex w-full items-center rounded-md border bg-background text-sm text-foreground placeholder:text-foreground/50 sm:text-base",
-            "border-gray-300 dark:border-gray-600",
+            "flex w-full items-center rounded-sm border bg-background text-sm text-foreground placeholder:text-foreground/55 sm:text-base",
+            "border-border-card",
             variant === "button-highlight"
               ? "my-1 h-10 pl-2 py-0 pr-0 sm:pr-1"
               : "pl-2",
@@ -143,7 +143,7 @@ const SearchInput = forwardRef<HTMLInputElement, SearchInputProps>(
             <MagnifyingGlassIcon
               className={clsx(
                 variant === "button-highlight"
-                  ? "mr-2 scale-125 rounded-md bg-primary-500 p-1 text-lg text-white sm:text-xl"
+                  ? "mr-2 scale-125 rounded-sm bg-primary-500 p-1 text-lg text-white sm:text-xl"
                   : "ml-2 text-md text-foreground/50 sm:text-lg"
               )}
             />
