@@ -96,7 +96,7 @@ export default function CitizenLegalActionsPage() {
             previousButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
             nextButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
             pageNumberClassName="rounded-sm text-sm font-medium"
-            activePageNumberClassName="border border-foreground/15 bg-foreground text-background"
+            activePageNumberClassName="border border-foreground/15 bg-foreground !text-background"
             inactivePageNumberClassName="border border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5"
             showItemsPerPageSelect={false}
             showFirstLastButtons={false}

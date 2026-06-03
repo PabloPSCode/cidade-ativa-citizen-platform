@@ -106,7 +106,17 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-border-card pt-6 text-sm text-foreground/65">
-          <p>2026, Desenvolvido por PLS Sistemas</p>
+          <p>
+            2026, Desenvolvido por{" "}
+            <a
+              href="https://www.plssistemas.com.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-foreground transition hover:text-primary-600"
+            >
+              PLS Sistemas
+            </a>
+          </p>
         </div>
       </div>
     </footer>

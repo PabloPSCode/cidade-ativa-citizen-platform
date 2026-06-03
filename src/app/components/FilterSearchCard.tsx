@@ -8,7 +8,7 @@ import {
   UserCircleIcon,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, type Dispatch, type SetStateAction } from "react";
 import { SearchInput } from "../../libs/react-ultimate-components/src";
 import type { SolicitationStatus } from "../constants/solicitations";
 
@@ -36,6 +36,9 @@ export interface FilterSearchCardProps {
 const selectClassName =
   "h-12 w-full rounded-[1.2rem] border border-border-card/60 bg-background/80 px-4 text-sm font-semibold text-foreground outline-none transition focus:border-foreground/30 dark:bg-white/[0.03]";
 
+const SEARCH_SCROLL_DELAY_MS = 2000;
+const SEARCH_RESULTS_SECTION_ID = "solicitacoes-listagem";
+
 export default function FilterSearchCard({
   search,
   setSearch,
@@ -53,6 +56,18 @@ export default function FilterSearchCard({
   onResetFilters,
   className,
 }: FilterSearchCardProps) {
+  useEffect(() => {
+    if (search.trim().length === 0) return;
+
+    const timeoutId = window.setTimeout(() => {
+      document
+        .getElementById(SEARCH_RESULTS_SECTION_ID)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, SEARCH_SCROLL_DELAY_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [search]);
+
   return (
     <section
       className={clsx(

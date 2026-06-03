@@ -1,6 +1,10 @@
 import { mockAuthenticatedUser } from "./auth";
 
-export type SolicitationStatus = "not_resolved" | "in_progress" | "resolved";
+export type SolicitationStatus =
+  | "not_resolved"
+  | "in_progress"
+  | "resolved"
+  | "unconsidered";
 
 export interface SolicitationSummary {
   id: string;
@@ -34,19 +38,25 @@ export const solicitationStatusMap: Record<
     label: "Não resolvido",
     dotClassName: "bg-alert-500",
     badgeClassName:
-      "border border-alert-500/30 bg-alert-500/10 text-alert-700 dark:bg-alert-400/15 dark:text-alert-100",
+      "border border-alert-500/35 bg-alert-500/10 text-alert-700 dark:bg-alert-400/15 dark:text-alert-100",
   },
   in_progress: {
     label: "Em andamento",
-    dotClassName: "bg-primary-500",
+    dotClassName: "bg-info-500",
     badgeClassName:
-      "border border-primary-500/30 bg-primary-500/10 text-primary-700 dark:bg-primary-400/15 dark:text-primary-100",
+      "border border-info-500/35 bg-info-500/10 text-info-700 dark:bg-info-400/15 dark:text-info-100",
   },
   resolved: {
     label: "Resolvido",
-    dotClassName: "bg-foreground/55",
+    dotClassName: "bg-success-500",
     badgeClassName:
-      "border border-foreground/15 bg-foreground/10 text-foreground dark:bg-white/10 dark:text-white",
+      "border border-success-500/35 bg-success-500/10 text-success-700 dark:bg-success-400/15 dark:text-success-100",
+  },
+  unconsidered: {
+    label: "Não considerado",
+    dotClassName: "bg-destructive-500",
+    badgeClassName:
+      "border border-destructive-500/35 bg-destructive-500/10 text-destructive-700 dark:bg-destructive-400/15 dark:text-destructive-100",
   },
 };
 
@@ -216,6 +226,8 @@ const resolutionCommentByStatus: Record<SolicitationStatus, string> = {
     "A equipe técnica realizou a vistoria inicial e o atendimento segue programado para a próxima janela operacional.",
   not_resolved:
     "A demanda foi registrada e aguarda o primeiro atendimento da equipe responsável para definição da tratativa.",
+  unconsidered:
+    "Após análise técnica, a demanda foi considerada não passível de atendimento devido a questões de competência ou viabilidade.",
 };
 
 export const mockedSolicitations: SolicitationRecord[] = Array.from(

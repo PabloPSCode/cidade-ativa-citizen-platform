@@ -457,7 +457,7 @@ export default function MySolicitationsPage() {
           onResetFilters={handleResetFilters}
         />
 
-        <section className="flex flex-col gap-5">
+        <section id="solicitacoes-listagem" className="flex flex-col gap-5">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-black tracking-tight sm:text-2xl">
@@ -485,7 +485,7 @@ export default function MySolicitationsPage() {
               previousButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               nextButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               pageNumberClassName="rounded-sm text-sm font-medium"
-              activePageNumberClassName="border border-foreground/15 bg-foreground text-background"
+              activePageNumberClassName="border border-foreground/15 bg-foreground !text-background"
               inactivePageNumberClassName="border border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5"
               showItemsPerPageSelect={false}
               showFirstLastButtons={false}

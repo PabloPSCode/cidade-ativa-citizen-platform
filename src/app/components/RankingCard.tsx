@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarDotsIcon, MedalIcon, ScalesIcon } from "@phosphor-icons/react";
+import { CalendarDotsIcon, MedalIcon } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { Button } from "../../libs/react-ultimate-components/src";
@@ -25,17 +25,17 @@ const positionStyles: Record<
   }
 > = {
   1: {
-    medalClassName: "bg-primary-500 text-white",
+    medalClassName: "bg-[#f2c94c] text-[#3f2f00]",
     cardClassName: "border-primary-500/35",
     avatarClassName: "bg-primary-500 text-white",
   },
   2: {
-    medalClassName: "bg-foreground/10 text-foreground",
+    medalClassName: "bg-[#c7cdd4] text-[#28323c]",
     cardClassName: "border-border-card",
     avatarClassName: "bg-secondary-700 text-white dark:bg-white/15",
   },
   3: {
-    medalClassName: "bg-secondary-300 text-secondary-900",
+    medalClassName: "bg-[#b7793d] text-white",
     cardClassName: "border-border-card",
     avatarClassName: "bg-secondary-600 text-white",
   },
@@ -60,7 +60,7 @@ export default function RankingCard({
 }: RankingCardProps) {
   const router = useRouter();
   const accentStyle = positionStyles[position] ?? fallbackStyle;
-  const showMedal = position <= 3;
+  const showMedal = Boolean(positionStyles[position]);
 
   return (
     <article
@@ -85,11 +85,7 @@ export default function RankingCard({
               >
                 <MedalIcon size={22} weight="fill" />
               </span>
-            ) : (
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-foreground/5 text-foreground/45 dark:bg-white/5">
-                <ScalesIcon size={18} weight="fill" />
-              </span>
-            )}
+            ) : null}
           </div>
 
           <div

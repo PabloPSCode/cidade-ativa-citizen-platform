@@ -188,7 +188,7 @@ export default function ListPagination({
                     className={clsx(
                       "inline-flex h-8 w-8 items-center justify-center text-xs font-medium sm:h-9 sm:w-9 sm:text-sm",
                       active
-                        ? "text-primary-600"
+                        ? "bg-primary-600 text-white dark:bg-primary-300 dark:text-primary-950"
                         : "bg-background text-foreground",
                       pageNumberClassName,
                       active

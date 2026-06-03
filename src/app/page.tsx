@@ -6,6 +6,7 @@ import {
   CheckCircleIcon,
   ClockCountdownIcon,
 } from "@phosphor-icons/react";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -109,6 +110,55 @@ export default function Home() {
     setDateOrder("recent");
   };
 
+  const handleIndicatorFilterClick = (status: SolicitationStatus | "all") => {
+    setSelectedStatus(status);
+
+    window.requestAnimationFrame(() => {
+      document
+        .getElementById("solicitacoes-listagem")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  };
+
+  const solicitationIndicatorCards = [
+    {
+      label: "Total",
+      count: solicitationStats.total,
+      description: `${formatCountLabel(
+        solicitationStats.total,
+        "registro",
+        "registros"
+      )} da comunidade nesta listagem mockada.`,
+      status: "all" as const,
+      icon: ChartBarIcon,
+      iconClassName: "text-foreground/75",
+    },
+    {
+      label: "Pendentes",
+      count: solicitationStats.pending,
+      description: "Casos que ainda aguardam uma resposta definitiva.",
+      status: "not_resolved" as const,
+      icon: ClockCountdownIcon,
+      iconClassName: "text-alert-700 dark:text-alert-100",
+    },
+    {
+      label: "Em andamento",
+      count: solicitationStats.inProgress,
+      description: "Demandas acompanhadas pelos setores responsáveis.",
+      status: "in_progress" as const,
+      icon: BuildingsIcon,
+      iconClassName: "text-info-700 dark:text-info-100",
+    },
+    {
+      label: "Resolvidas",
+      count: solicitationStats.resolved,
+      description: "Solicitações marcadas como concluídas no fluxo atual.",
+      status: "resolved" as const,
+      icon: CheckCircleIcon,
+      iconClassName: "text-success-700 dark:text-success-100",
+    },
+  ];
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <Section
@@ -157,84 +207,43 @@ export default function Home() {
           </div>
 
           <div className="grid gap-4 xl:grid-cols-4">
-            <article className="rounded-[1.75rem] border border-border-card/70 bg-bg-card p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-foreground/5 p-3 dark:bg-white/5">
-                  <ChartBarIcon size={22} weight="fill" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-                    Total
-                  </p>
-                  <p className="text-2xl font-black">{solicitationStats.total}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-foreground/65">
-                {formatCountLabel(
-                  solicitationStats.total,
-                  "registro",
-                  "registros"
-                )}{" "}
-                da comunidade nesta listagem mockada.
-              </p>
-            </article>
+            {solicitationIndicatorCards.map((card) => {
+              const Icon = card.icon;
+              const isActive = selectedStatus === card.status;
 
-            <article className="rounded-sm border border-border-card bg-bg-card p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="rounded-sm bg-foreground/5 p-3 text-alert-700 dark:bg-white/5 dark:text-alert-100">
-                  <ClockCountdownIcon size={22} weight="fill" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-                    Pendentes
+              return (
+                <button
+                  key={card.status}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => handleIndicatorFilterClick(card.status)}
+                  className={clsx(
+                    "flex h-full flex-col items-stretch rounded-sm border border-border-card bg-bg-card p-5 text-left shadow-sm transition hover:border-foreground/25 hover:bg-foreground/[0.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/40",
+                    isActive && "border-primary-500/45 bg-primary-500/5"
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={clsx(
+                        "rounded-sm bg-foreground/5 p-3 dark:bg-white/5",
+                        card.iconClassName
+                      )}
+                    >
+                      <Icon size={22} weight="fill" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+                        {card.label}
+                      </p>
+                      <p className="text-2xl font-black">{card.count}</p>
+                    </div>
+                  </div>
+                  <p className="mt-4 text-sm text-foreground/65">
+                    {card.description}
                   </p>
-                  <p className="text-2xl font-black">
-                    {solicitationStats.pending}
-                  </p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-foreground/65">
-                Casos que ainda aguardam uma resposta definitiva.
-              </p>
-            </article>
-
-            <article className="rounded-sm border border-border-card bg-bg-card p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="rounded-sm bg-foreground/5 p-3 text-primary-600 dark:bg-white/5 dark:text-primary-300">
-                  <BuildingsIcon size={22} weight="fill" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-                    Em andamento
-                  </p>
-                  <p className="text-2xl font-black">
-                    {solicitationStats.inProgress}
-                  </p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-foreground/65">
-                Demandas acompanhadas pelos setores responsáveis.
-              </p>
-            </article>
-
-            <article className="rounded-sm border border-border-card bg-bg-card p-5 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="rounded-sm bg-foreground/5 p-3 text-primary-600 dark:bg-white/5 dark:text-primary-300">
-                  <CheckCircleIcon size={22} weight="fill" />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-                    Resolvidas
-                  </p>
-                  <p className="text-2xl font-black">
-                    {solicitationStats.resolved}
-                  </p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-foreground/65">
-                Solicitações marcadas como concluídas no fluxo atual.
-              </p>
-            </article>
+                </button>
+              );
+            })}
           </div>
         </section>
 
@@ -257,7 +266,7 @@ export default function Home() {
           onResetFilters={handleResetFilters}
         />
 
-        <section className="flex flex-col gap-5">
+        <section id="solicitacoes-listagem" className="flex flex-col gap-5">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-black tracking-tight sm:text-2xl">
@@ -285,7 +294,7 @@ export default function Home() {
               previousButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               nextButtonClassName="min-w-[9rem] rounded-2xl border border-foreground/15 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-foreground/30 hover:bg-foreground/5"
               pageNumberClassName="rounded-sm text-sm font-medium"
-              activePageNumberClassName="border border-foreground/15 bg-foreground text-background"
+              activePageNumberClassName="border border-foreground/15 bg-foreground !text-background"
               inactivePageNumberClassName="border border-transparent text-foreground/70 hover:border-foreground/10 hover:bg-foreground/5"
               showItemsPerPageSelect={false}
               showFirstLastButtons={false}

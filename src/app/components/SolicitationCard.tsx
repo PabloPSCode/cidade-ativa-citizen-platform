@@ -77,13 +77,13 @@ export default function SolicitationCard({
           : undefined
       }
       className={clsx(
-        "solicitation-card Container rounded-[2rem] border border-border-card/70 bg-bg-card p-4 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)] transition sm:p-5 xl:p-6",
+        "solicitation-card Container w-full max-w-full rounded-[2rem] border border-border-card/70 bg-bg-card p-4 shadow-[0_28px_64px_-48px_rgba(15,23,42,0.45)] transition sm:p-5 xl:p-6",
         isInteractive &&
           "cursor-pointer hover:border-foreground/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/40",
         className
       )}
     >
-      <div className="grid gap-5 xl:grid-cols-[136px_minmax(0,1.45fr)_repeat(4,minmax(0,0.9fr))_auto] xl:items-center">
+      <div className="grid w-full gap-5 xl:grid-cols-[136px_minmax(0,1fr)_auto] xl:items-start">
         <div className="relative h-44 overflow-hidden rounded-[1.5rem] bg-neutral-200 dark:bg-white/5 sm:h-52 xl:h-28 xl:w-[136px]">
           <Image
             src={mainImageUrl}
@@ -94,7 +94,7 @@ export default function SolicitationCard({
           />
         </div>
 
-        <div className="flex min-w-0 flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4 xl:self-center">
           <div className="space-y-2">
             <div className="space-y-2">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
@@ -118,10 +118,6 @@ export default function SolicitationCard({
                 </span>
               </div>
             </div>
-
-            <p className="text-sm leading-6 text-foreground/75 sm:text-[0.95rem]">
-              {description}
-            </p>
           </div>
 
           <div className="flex flex-wrap gap-2.5 text-xs font-medium text-foreground/60 sm:text-sm">
@@ -136,57 +132,9 @@ export default function SolicitationCard({
           </div>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:contents">
-          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              Bairro
-            </p>
-            <p className="mt-2 text-sm font-semibold text-foreground sm:text-base">
-              {neighborhood}
-            </p>
-          </div>
-
-          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              Status
-            </p>
-            <p className="mt-2 text-sm font-semibold text-foreground sm:text-base">
-              {statusLabel ?? statusConfig.label}
-            </p>
-          </div>
-
-          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              {requestingUserLabel}
-            </p>
-            <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
-              <UserCircleIcon
-                size={18}
-                weight="fill"
-                className="shrink-0 text-foreground/55"
-              />
-              <span className="truncate">{requestingUserId}</span>
-            </div>
-          </div>
-
-          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              Data de cadastro
-            </p>
-            <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
-              <CalendarDotsIcon
-                size={18}
-                weight="fill"
-                className="shrink-0 text-foreground/55"
-              />
-              <span>{formatSolicitationDate(createdAt)}</span>
-            </div>
-          </div>
-        </div>
-
         <div
           className={clsx(
-            "flex flex-wrap items-center gap-3 xl:justify-self-end",
+            "flex flex-wrap items-center gap-3 xl:justify-self-end xl:self-center",
             hasManagementActions ? "xl:max-w-[18rem]" : "xl:max-w-[11rem]"
           )}
         >
@@ -233,6 +181,63 @@ export default function SolicitationCard({
             }
             className="flex-1 justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 xl:min-w-[10rem]"
           />
+        </div>
+
+        <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03] xl:col-span-full">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+            Descrição
+          </p>
+          <p className="mt-2 text-sm leading-6 text-foreground/75 sm:text-[0.95rem]">
+            {description}
+          </p>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:col-span-full">
+          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+              Bairro
+            </p>
+            <p className="mt-2 text-sm font-semibold text-foreground sm:text-base">
+              {neighborhood}
+            </p>
+          </div>
+
+          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+              Status
+            </p>
+            <p className="mt-2 text-sm font-semibold text-foreground sm:text-base">
+              {statusLabel ?? statusConfig.label}
+            </p>
+          </div>
+
+          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+              {requestingUserLabel}
+            </p>
+            <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
+              <UserCircleIcon
+                size={18}
+                weight="fill"
+                className="shrink-0 text-foreground/55"
+              />
+              <span className="truncate">{requestingUserId}</span>
+            </div>
+          </div>
+
+          <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+              Data de cadastro
+            </p>
+            <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
+              <CalendarDotsIcon
+                size={18}
+                weight="fill"
+                className="shrink-0 text-foreground/55"
+              />
+              <span>{formatSolicitationDate(createdAt)}</span>
+            </div>
+          </div>
         </div>
       </div>
     </article>
