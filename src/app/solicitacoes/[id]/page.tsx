@@ -1,7 +1,14 @@
 "use client";
 
-import { BuildingsIcon, CheckCircleIcon } from "@phosphor-icons/react";
-import { notFound } from "next/navigation";
+import {
+  BuildingsIcon,
+  CheckCircleIcon,
+  PenNibIcon,
+  UsersThreeIcon,
+  WarningCircleIcon,
+} from "@phosphor-icons/react";
+import Link from "next/link";
+import { notFound, usePathname } from "next/navigation";
 import { use, useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
   FileInput,
@@ -10,15 +17,23 @@ import {
   UploadedFilePreview,
 } from "../../../libs/react-ultimate-components/src";
 import {
+  getSignatureByUserId,
+  listSignaturesBySolicitation,
+  signSolicitation,
+  type SolicitationSignatureResponseDTO,
+} from "../../../services/signatures";
+import {
   getSolicitationById,
   solveSolicitation,
 } from "../../../services/solicitations";
+import SignatureListCard from "../../components/SignatureListCard";
 import SolicitationDetailsCard from "../../components/SolicitationDetailsCard";
 import {
   mapSolicitationDTOToRecord,
   type SolicitationRecord,
 } from "../../constants/solicitations";
 import { useAuth } from "../../hooks/useAuth";
+import { buildScopedHref } from "../../lib/site-paths";
 
 interface PhotoPreview {
   name: string;
@@ -47,10 +62,21 @@ export default function SolicitationDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  const pathname = usePathname();
   const { authenticatedUser, isAuthenticated, hasHydrated } = useAuth();
   const [solicitation, setSolicitation] = useState<SolicitationRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFoundError, setNotFoundError] = useState(false);
+
+  const [signatures, setSignatures] = useState<
+    SolicitationSignatureResponseDTO[]
+  >([]);
+  const [hasRegisteredSignature, setHasRegisteredSignature] = useState(false);
+  const [signModalOpen, setSignModalOpen] = useState(false);
+  const [registerFirstModalOpen, setRegisterFirstModalOpen] = useState(false);
+  const [signaturesModalOpen, setSignaturesModalOpen] = useState(false);
+  const [isSigning, setIsSigning] = useState(false);
+  const [signError, setSignError] = useState<string | null>(null);
 
   const [solveModalOpen, setSolveModalOpen] = useState(false);
   const [solvedPhotos, setSolvedPhotos] = useState<PhotoPreview[]>([]);
@@ -82,6 +108,37 @@ export default function SolicitationDetailsPage({
     return () => { cancelled = true; };
   }, [id, hasHydrated, isAuthenticated]);
 
+  // Carrega as assinaturas da solicitação e se o usuário atual já tem assinatura
+  // registrada (para decidir o fluxo do botão "Concordar e assinar").
+  useEffect(() => {
+    if (!hasHydrated) return;
+
+    let cancelled = false;
+
+    async function loadSignatures() {
+      const list = await listSignaturesBySolicitation(id).catch(() => []);
+      if (!cancelled) setSignatures(list);
+    }
+
+    async function loadRegisteredSignature() {
+      if (!authenticatedUser) {
+        setHasRegisteredSignature(false);
+        return;
+      }
+      // O back-end responde 404 quando o usuário ainda não tem assinatura.
+      const registered = await getSignatureByUserId(
+        authenticatedUser.userId
+      ).catch(() => null);
+      if (!cancelled) setHasRegisteredSignature(Boolean(registered));
+    }
+
+    loadSignatures();
+    loadRegisteredSignature();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, hasHydrated, authenticatedUser]);
+
   if (!hasHydrated || isLoading) {
     return (
       <main className="min-h-screen bg-background text-foreground">
@@ -111,6 +168,45 @@ export default function SolicitationDetailsPage({
     isOwner &&
     (solicitation.status === "not_resolved" ||
       solicitation.status === "in_progress");
+
+  // Só é possível assinar uma solicitação de outro usuário (não o próprio autor).
+  const canSign = isAuthenticated && !isOwner;
+  const alreadySigned = authenticatedUser
+    ? signatures.some(
+        (signature) => signature.userId === authenticatedUser.userId
+      )
+    : false;
+
+  const handleClickSign = () => {
+    setSignError(null);
+    if (!hasRegisteredSignature) {
+      setRegisterFirstModalOpen(true);
+      return;
+    }
+    setSignModalOpen(true);
+  };
+
+  const handleConfirmSign = async () => {
+    if (!authenticatedUser) return;
+    setIsSigning(true);
+    setSignError(null);
+    try {
+      const created = await signSolicitation({
+        userId: authenticatedUser.userId,
+        solicitationId: id,
+      });
+      setSignatures((current) => [...current, created]);
+      setSignModalOpen(false);
+    } catch (error: unknown) {
+      setSignError(
+        error instanceof Error
+          ? error.message
+          : "Erro ao assinar a solicitação. Tente novamente."
+      );
+    } finally {
+      setIsSigning(false);
+    }
+  };
 
   const handleOpenSolveModal = () => {
     setSolvedPhotos([]);
@@ -188,16 +284,44 @@ export default function SolicitationDetailsPage({
                 </p>
               </div>
 
-              {canMarkSolved && (
+              <div className="flex flex-wrap items-center gap-3 sm:justify-end">
                 <button
                   type="button"
-                  onClick={handleOpenSolveModal}
-                  className="inline-flex shrink-0 items-center gap-2 self-start rounded-sm bg-success-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-success-600"
+                  onClick={() => setSignaturesModalOpen(true)}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-foreground/15 bg-background px-5 py-3 text-sm font-medium text-foreground transition hover:bg-foreground/5"
                 >
-                  <CheckCircleIcon size={18} weight="fill" />
-                  Marcar como resolvida
+                  <UsersThreeIcon size={18} weight="fill" />
+                  Ver assinaturas ({signatures.length})
                 </button>
-              )}
+
+                {canSign &&
+                  (alreadySigned ? (
+                    <span className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-success-500/30 bg-success-500/10 px-5 py-3 text-sm font-medium text-success-700 dark:text-success-200">
+                      <CheckCircleIcon size={18} weight="fill" />
+                      Você já assinou
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleClickSign}
+                      className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-primary-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-primary-600"
+                    >
+                      <PenNibIcon size={18} weight="fill" />
+                      Concordar e assinar
+                    </button>
+                  ))}
+
+                {canMarkSolved && (
+                  <button
+                    type="button"
+                    onClick={handleOpenSolveModal}
+                    className="inline-flex shrink-0 items-center gap-2 rounded-sm bg-success-500 px-5 py-3 text-sm font-medium text-white transition hover:bg-success-600"
+                  >
+                    <CheckCircleIcon size={18} weight="fill" />
+                    Marcar como resolvida
+                  </button>
+                )}
+              </div>
             </div>
           </section>
 
@@ -283,6 +407,101 @@ export default function SolicitationDetailsPage({
             </p>
           )}
         </div>
+      </GenericModal>
+
+      {/* Modal: confirmar assinatura */}
+      <GenericModal
+        open={signModalOpen}
+        onClose={() => setSignModalOpen(false)}
+        title="Concordar e assinar"
+        description="Ao assinar, você apoia publicamente esta solicitação com a sua assinatura registrada."
+        size="sm"
+        className="rounded-[1.75rem] border border-border-card/70 bg-bg-card"
+        showCancelButton
+        showConfirmButton
+        cancelButtonLabel="Cancelar"
+        confirmButtonLabel={isSigning ? "Assinando..." : "Concordar e assinar"}
+        confirmButtonDisabled={isSigning}
+        onConfirm={handleConfirmSign}
+        cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
+        confirmButtonClassName="rounded-sm bg-primary-500 px-5 py-3 font-medium text-white hover:bg-primary-600 disabled:opacity-50"
+      >
+        <div className="flex flex-col gap-3">
+          <p className="text-sm text-foreground/75">
+            Confirma que deseja assinar a solicitação{" "}
+            {solicitation.protocolNumber}? Sua assinatura ficará visível para a
+            comunidade.
+          </p>
+          {signError && (
+            <p className="rounded-sm border border-destructive-500/20 bg-destructive-500/10 px-4 py-3 text-sm text-destructive-500">
+              {signError}
+            </p>
+          )}
+        </div>
+      </GenericModal>
+
+      {/* Modal: precisa registrar assinatura primeiro */}
+      <GenericModal
+        open={registerFirstModalOpen}
+        onClose={() => setRegisterFirstModalOpen(false)}
+        title="Assinatura necessária"
+        description="Você precisa de uma assinatura registrada para assinar uma solicitação."
+        size="sm"
+        className="rounded-[1.75rem] border border-border-card/70 bg-bg-card"
+        showCancelButton
+        showConfirmButton={false}
+        cancelButtonLabel="Entendi"
+        cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
+      >
+        <div className="flex items-start gap-3 rounded-sm border border-alert-500/20 bg-alert-500/10 p-4 text-sm text-foreground/80">
+          <WarningCircleIcon
+            size={22}
+            weight="fill"
+            className="mt-0.5 shrink-0 text-alert-600"
+          />
+          <p>
+            Cadastre uma assinatura no seu perfil clicando em{" "}
+            <Link
+              href={buildScopedHref(pathname, "/perfil")}
+              onClick={() => setRegisterFirstModalOpen(false)}
+              className="font-semibold text-primary-600 underline underline-offset-2 hover:text-primary-700 dark:text-primary-300"
+            >
+              {authenticatedUser?.name ?? "seu nome"}
+            </Link>{" "}
+            no topo da página. Depois volte aqui para assinar esta solicitação.
+          </p>
+        </div>
+      </GenericModal>
+
+      {/* Modal: assinaturas da solicitação */}
+      <GenericModal
+        open={signaturesModalOpen}
+        onClose={() => setSignaturesModalOpen(false)}
+        title="Assinaturas da solicitação"
+        description="Pessoas que concordaram e assinaram esta solicitação."
+        size="md"
+        className="rounded-[1.75rem] border border-border-card/70 bg-bg-card"
+        showCancelButton
+        showConfirmButton={false}
+        cancelButtonLabel="Fechar"
+        cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
+      >
+        {signatures.length > 0 ? (
+          <div className="flex max-h-[400px] flex-col gap-3 overflow-y-auto">
+            {signatures.map((signature) => (
+              <SignatureListCard
+                key={signature.id}
+                userName={signature.userName}
+                signatureImageUrl={signature.imageUrl}
+                signedAt={signature.createdAt}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="rounded-sm border border-border-card/70 bg-background/70 px-4 py-6 text-center text-sm text-foreground/65 dark:bg-white/[0.02]">
+            Esta solicitação ainda não possui assinaturas.
+          </p>
+        )}
       </GenericModal>
     </>
   );
