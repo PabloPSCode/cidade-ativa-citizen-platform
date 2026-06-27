@@ -5,10 +5,9 @@ import clsx from "clsx";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  getCitizenById,
-  getCitizenLegalActionByIds,
+    getCitizenById,
+    getCitizenLegalActionByIds,
 } from "../constants/citizen-legal";
-import { getSolicitationById } from "../constants/solicitations";
 
 interface BreadcrumbProps {
   className?: string;
@@ -22,7 +21,7 @@ interface BreadcrumbItem {
 
 const segmentLabels: Record<string, string> = {
   acoes: "Ações",
-  "cadastrar-situacao": "Cadastrar situação",
+  "cadastrar-situacao": "Cadastrar solicitação",
   "cidadao-legal": "Cidadão Legal",
   "minhas-solicitacoes": "Minhas solicitações",
   pesquisa: "Pesquisa",
@@ -49,11 +48,7 @@ const resolveSegmentLabel = (
   segments: string[]
 ) => {
   if (segments[0] === "solicitacoes" && index === 1) {
-    const solicitation = getSolicitationById(segment);
-
-    return solicitation
-      ? `Solicitação ${solicitation.protocolNumber}`
-      : formatSegmentLabel(segment);
+    return `Solicitação ${formatSegmentLabel(segment)}`;
   }
 
   if (segments[0] === "cidadao-legal") {
@@ -117,7 +112,7 @@ export default function Breadcrumb({ className }: BreadcrumbProps) {
   return (
     <div
       className={clsx(
-        "sticky top-[7.75rem] z-40 border-b border-border-card bg-bg-card/95 backdrop-blur-md md:top-20",
+        "sticky top-[7.75rem] z-40 border-b border-border-card bg-white md:top-20",
         className
       )}
     >

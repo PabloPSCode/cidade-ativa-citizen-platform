@@ -1,51 +1,30 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import type { ReactNode } from "react";
-import { getStoreByDomain } from "../lib/store-data";
+import AppChrome from "./components/AppChrome";
 import Breadcrumb from "./components/Breadcrumb";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import ThemeTokens from "./components/ThemeTokens";
-import { StoreProvider } from "./providers/StoreProvider";
 // @ts-ignore: Allow importing global CSS without type declarations
 import "./globals.css";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const headerList = headers();
-  const host =
-    (await headerList).get("x-store-slug") ??
-    (await headerList).get("x-forwarded-host") ??
-    (await headerList).get("host");
-  const { storeData } = await getStoreByDomain(host);
+export const metadata: Metadata = {
+  title: "Cidade Ativa",
+  description: "Uma plataforma cidadã para uma cidade melhor. Registre, acompanhe e resolva situações do seu município.",
+};
 
-  return {
-    title: storeData.store.name || "MostraLoja",
-    description: storeData.store.slogan || "Loja virtual feita com MostraLoja",
-  };
-}
-
-export default async function RootLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const headerList = headers();
-  const host =
-    (await headerList).get("x-store-slug") ??
-    (await headerList).get("x-forwarded-host") ??
-    (await headerList).get("host");
-  const storePayload = await getStoreByDomain(host);
-
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-BR">
       <body className="overflow-x-hidden">
-        <StoreProvider value={storePayload}>
-          <ThemeTokens />
-          <Header />
-          <Breadcrumb />
+        <ThemeTokens />
+        <AppChrome
+          header={<Header />}
+          breadcrumb={<Breadcrumb />}
+          footer={<Footer />}
+        >
           {children}
-          <Footer />
-        </StoreProvider>
+        </AppChrome>
       </body>
     </html>
   );

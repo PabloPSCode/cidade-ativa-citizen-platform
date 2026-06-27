@@ -1,29 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
+import { getServerAuthToken } from "../../lib/server-auth";
+import { listPublicPhones } from "../../services/public-phones";
 
 const navigationLinks = [
-  { href: "/#sobre", label: "O que é a CidadeAtiva?" },
-  { href: "/#como-funciona", label: "Como funciona?" },
-  { href: "/#duvidas", label: "Dúvidas" },
   { href: "/#solicitacoes-gerais", label: "Solicitações" },
   { href: "/cidadao-legal", label: "Cidadão legal" },
+  { href: "/enquetes", label: "Enquetes" },
+  { href: "/duvidas", label: "Dúvidas" },
 ];
 
 const policyLinks = [
-  { href: "#", label: "Política de Privacidade" },
-  { href: "#", label: "Termos de Uso" },
+  { href: "/politica-de-privacidade", label: "Política de Privacidade" },
+  { href: "/termos-de-uso", label: "Termos de Uso" },
 ];
 
-const usefulPhones = [
-  { label: "Bombeiros", phone: "193" },
-  { label: "Polícia Militar", phone: "190" },
-  { label: "Prefeitura", phone: "156" },
-  { label: "SAMU", phone: "192" },
-  { label: "Defesa Civil", phone: "199" },
-  { label: "Guarda Municipal", phone: "153" },
-];
+export default async function Footer() {
+  // Escopo de cidade do usuário autenticado vem do token no cookie (SSR).
+  const token = await getServerAuthToken();
+  const phonesResult = await listPublicPhones({ perPage: 50 }, token).catch(
+    () => null,
+  );
+  const phones = phonesResult?.data ?? [];
 
-export default function Footer() {
   return (
     <footer
       id="cidadao-legal"
@@ -31,23 +30,22 @@ export default function Footer() {
     >
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-[1.2fr_0.9fr_0.9fr_1.1fr]">
-          <div className="space-y-5">
-            <Link href="/" className="inline-flex items-center">
+          <div className="flex flex-col gap-4 items-center sm:items-start">
+            <Link href="/" aria-label="CidadeAtiva">
               <Image
-                src="/logo.png"
-                alt="Cidade Ativa"
-                width={200}
-                height={56}
-                className="h-12 w-auto object-contain"
+                src="/logo_text.png"
+                alt="CidadeAtiva"
+                width={160}
+                height={44}
+                className="h-9 w-auto"
               />
             </Link>
-
-            <p className="max-w-xs text-sm leading-6 text-foreground/65">
+            <p className="text-foreground/60 text-sm max-w-[22ch] text-center sm:text-left">
               Uma cidade melhor depende de todos.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 text-center sm:text-left">
             <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-foreground/45">
               Navegue
             </h2>
@@ -65,7 +63,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 text-center sm:text-left">
             <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-foreground/45">
               Termos e políticas
             </h2>
@@ -83,22 +81,20 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-4 text-center sm:text-left">
             <h2 className="text-sm font-medium uppercase tracking-[0.18em] text-foreground/45">
               Telefones úteis
             </h2>
-            <ul className="grid gap-3 text-sm text-foreground/80">
-              {usefulPhones.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    href={`tel:${item.phone}`}
-                    className="flex items-center justify-between gap-4 rounded-2xl border border-black/5 bg-background/60 px-4 py-3 transition hover:border-black/10 hover:bg-background dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
-                  >
-                    <span className="font-medium">{item.label}</span>
-                    <span className="rounded-sm bg-foreground/5 px-3 py-1 font-medium text-foreground dark:bg-white/10">
-                      {item.phone}
-                    </span>
-                  </Link>
+            <ul className="grid gap-2 text-sm text-foreground/75">
+              {phones.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-center justify-center gap-4 sm:justify-between"
+                >
+                  <span>{item.institutionName}</span>
+                  <span className="font-medium text-foreground">
+                    {item.phone}
+                  </span>
                 </li>
               ))}
             </ul>
