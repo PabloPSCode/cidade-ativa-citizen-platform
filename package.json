@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@iconify/react": "^5.2.1",
+    "axios": "^1.17.0",
+    "firebase": "^12.14.0",
     "next": "15.1.9",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-hook-form": "^7.77.0",
     "react-share": "^5.2.2",
     "react-ultimate-components": "file:src/libs/react-ultimate-components",
     "zustand": "^5.0.12"
