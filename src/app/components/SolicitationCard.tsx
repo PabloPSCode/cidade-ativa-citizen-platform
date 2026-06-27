@@ -19,7 +19,7 @@ import {
 } from "../constants/solicitations";
 
 export interface SolicitationCardProps
-  extends Omit<SolicitationSummary, "id" | "protocolNumber"> {
+  extends Omit<SolicitationSummary, "id"> {
   className?: string;
   detailsHref?: string;
   titleLabel?: string;
@@ -32,7 +32,9 @@ export interface SolicitationCardProps
 
 export default function SolicitationCard({
   title,
+  protocolNumber,
   requestingUserId,
+  requestingUserName,
   description,
   imageUrls,
   neighborhood,
@@ -97,9 +99,14 @@ export default function SolicitationCard({
         <div className="flex min-w-0 flex-col gap-4 xl:self-center">
           <div className="space-y-2">
             <div className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-                {titleLabel}
-              </p>
+              <div className="flex items-center gap-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
+                  {titleLabel}
+                </p>
+                <span className="text-xs font-semibold text-foreground/45">
+                  #{protocolNumber}
+                </span>
+              </div>
               <div className="flex flex-wrap items-center gap-3">
                 <h3 className="text-lg font-black tracking-tight">{title}</h3>
                 <span
@@ -221,7 +228,7 @@ export default function SolicitationCard({
                 weight="fill"
                 className="shrink-0 text-foreground/55"
               />
-              <span className="truncate">{requestingUserId}</span>
+              <span className="truncate">{requestingUserName || requestingUserId}</span>
             </div>
           </div>
 

@@ -1,29 +1,42 @@
 "use client";
 
 import { UserCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
-import { useEffect, useState, type ChangeEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
-  Button,
-  DateInput,
-  FileInput,
-  ModalsGenericModal as GenericModal,
-  PaginationList,
-  Section,
-  TextAreaInput,
-  TextInput,
-  UploadedFilePreview,
+    Button,
+    DateInput,
+    FileInput,
+    ModalsGenericModal as GenericModal,
+    PaginationList,
+    Section,
+    TextAreaInput,
+    TextInput,
+    UploadedFilePreview,
 } from "../../libs/react-ultimate-components/src";
+import { fetchAddressByCep } from "../../services/cep";
+import {
+    deleteSolicitation,
+    listSolicitations,
+    updateSolicitation,
+} from "../../services/solicitations";
 import FilterSearchCard from "../components/FilterSearchCard";
 import SolicitationCard from "../components/SolicitationCard";
 import {
-  buildSolicitationDetailsHref,
-  getSolicitationsByRequestingUserId,
-  type SolicitationRecord,
-  solicitationStatusMap,
-  type SolicitationStatus,
+    buildSolicitationDetailsHref,
+    formatCep,
+    isSolicitationOpen,
+    isValidCep,
+    mapSolicitationDTOToRecord,
+    MAX_OPEN_SOLICITATIONS,
+    OPEN_SOLICITATIONS_LIMIT_MESSAGE,
+    solicitationStatusMap,
+    statusOptions,
+    type SolicitationRecord,
+    type SolicitationStatus,
 } from "../constants/solicitations";
 import { useAuth } from "../hooks/useAuth";
+import { useNeighborhoods } from "../hooks/useNeighborhoods";
 import { buildScopedHref } from "../lib/site-paths";
 
 const MAX_PHOTOS_PER_SECTION = 2;
@@ -42,6 +55,7 @@ interface EditableSolicitationDraft {
   description: string;
   neighborhood: string;
   street: string;
+  cep: string;
   createdAt: string;
   imageUrls: EditablePhotoPreview[];
   resolutionImageUrls: EditablePhotoPreview[];
@@ -66,6 +80,7 @@ const createDraftFromSolicitation = (
   description: solicitation.description,
   neighborhood: solicitation.neighborhood,
   street: solicitation.street,
+  cep: solicitation.cep,
   createdAt: solicitation.createdAt,
   imageUrls: solicitation.imageUrls
     .slice(0, MAX_PHOTOS_PER_SECTION)
@@ -96,26 +111,24 @@ export default function MySolicitationsPage() {
   const pathname = usePathname();
   const router = useRouter();
   const { authenticatedUser, hasHydrated, isAuthenticated } = useAuth();
-  const [mySolicitations, setMySolicitations] = useState<SolicitationRecord[]>(
-    []
-  );
+  const { neighborhoods: neighborhoodOptions } = useNeighborhoods();
+  const [mySolicitations, setMySolicitations] = useState<SolicitationRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedNeighborhood, setSelectedNeighborhood] = useState("all");
-  const [selectedStatus, setSelectedStatus] = useState<
-    SolicitationStatus | "all"
-  >("all");
-  const [selectedRequestingUserId, setSelectedRequestingUserId] =
-    useState("all");
+  const [selectedStatus, setSelectedStatus] = useState<SolicitationStatus | "all">("all");
+  const [selectedRequestingUserId, setSelectedRequestingUserId] = useState("all");
   const [dateOrder, setDateOrder] = useState<"recent" | "oldest">("recent");
   const [page, setPage] = useState(1);
-  const [editDraft, setEditDraft] = useState<EditableSolicitationDraft | null>(
-    null
-  );
-  const [deleteTarget, setDeleteTarget] = useState<SolicitationRecord | null>(
-    null
-  );
+  const [editDraft, setEditDraft] = useState<EditableSolicitationDraft | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<SolicitationRecord | null>(null);
   const [createdAtDate, setCreatedAtDate] = useState(new Date());
   const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLookingUpCep, setIsLookingUpCep] = useState(false);
+  // Último CEP (8 dígitos) consultado, para não repetir a busca a cada tecla.
+  const lastQueriedCepRef = useRef("");
+  const [isDeleting, setIsDeleting] = useState(false);
   const [beforeUploadKey, setBeforeUploadKey] = useState(0);
   const [afterUploadKey, setAfterUploadKey] = useState(0);
 
@@ -126,20 +139,40 @@ export default function MySolicitationsPage() {
   }, [hasHydrated, isAuthenticated, pathname, router]);
 
   useEffect(() => {
-    if (authenticatedUser) {
-      setMySolicitations(
-        getSolicitationsByRequestingUserId(authenticatedUser.name).map(
-          (item) => ({
-            ...item,
-            imageUrls: item.imageUrls.slice(0, MAX_PHOTOS_PER_SECTION),
-            resolutionImageUrls: item.resolutionImageUrls.slice(
-              0,
-              MAX_PHOTOS_PER_SECTION
-            ),
-          })
-        )
-      );
+    if (!authenticatedUser) return;
+
+    let cancelled = false;
+
+    async function fetchMySolicitations() {
+      setIsLoading(true);
+      try {
+        const result = await listSolicitations({
+          userId: authenticatedUser!.userId,
+          page: 1,
+          perPage: 100,
+        });
+        if (!cancelled) {
+          setMySolicitations(
+            result.data.map((dto) => {
+              const record = mapSolicitationDTOToRecord(dto);
+              return {
+                ...record,
+                imageUrls: record.imageUrls.slice(0, MAX_PHOTOS_PER_SECTION),
+                resolutionImageUrls: record.resolutionImageUrls.slice(
+                  0,
+                  MAX_PHOTOS_PER_SECTION
+                ),
+              };
+            })
+          );
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
     }
+
+    fetchMySolicitations();
+    return () => { cancelled = true; };
   }, [authenticatedUser]);
 
   useEffect(() => {
@@ -163,7 +196,7 @@ export default function MySolicitationsPage() {
           item.description,
           item.neighborhood,
           item.street,
-          item.requestingUserId,
+          item.requestingUserName,
           item.protocolNumber,
         ].some((value) => value.toLowerCase().includes(normalizedSearch));
 
@@ -238,13 +271,7 @@ export default function MySolicitationsPage() {
     );
   }
 
-  const neighborhoodOptions = Array.from(
-    new Set(mySolicitations.map((item) => item.neighborhood))
-  ).sort((left, right) => left.localeCompare(right));
-
-  const requestingUserOptions = [authenticatedUser.name];
-
-  const statusOptions = (
+  const _statusOptions = (
     Object.keys(solicitationStatusMap) as SolicitationStatus[]
   ).map((status) => ({
     value: status,
@@ -258,12 +285,19 @@ export default function MySolicitationsPage() {
     selectedRequestingUserId !== "all" ||
     dateOrder !== "recent";
 
+  const openSolicitationsCount = mySolicitations.filter((item) =>
+    isSolicitationOpen(item.status)
+  ).length;
+  const hasReachedOpenLimit =
+    openSolicitationsCount >= MAX_OPEN_SOLICITATIONS;
+
   const isEditFormInvalid =
     !editDraft ||
     editDraft.title.trim().length === 0 ||
     editDraft.description.trim().length === 0 ||
     editDraft.neighborhood.trim().length === 0 ||
-    editDraft.street.trim().length === 0;
+    editDraft.street.trim().length === 0 ||
+    !isValidCep(editDraft.cep);
 
   const handleResetFilters = () => {
     setSearch("");
@@ -305,6 +339,40 @@ export default function MySolicitationsPage() {
     );
   };
 
+  // Busca o endereço pelo CEP só quando os 8 dígitos são atingidos e o valor
+  // mudou desde a última consulta — evitando chamadas a cada tecla digitada.
+  const handleChangeDraftCep = (rawValue: string) => {
+    const formatted = formatCep(rawValue);
+    setEditDraft((currentDraft) =>
+      currentDraft ? { ...currentDraft, cep: formatted } : currentDraft
+    );
+
+    const digits = formatted.replace(/\D/g, "");
+    if (digits.length < 8) {
+      lastQueriedCepRef.current = "";
+      return;
+    }
+    if (digits === lastQueriedCepRef.current) return;
+    lastQueriedCepRef.current = digits;
+
+    setIsLookingUpCep(true);
+    fetchAddressByCep(formatted)
+      .then((address) => {
+        if (!address) return;
+        setEditDraft((currentDraft) =>
+          currentDraft
+            ? {
+                ...currentDraft,
+                street: address.street || currentDraft.street,
+                neighborhood:
+                  address.neighborhood || currentDraft.neighborhood,
+              }
+            : currentDraft
+        );
+      })
+      .finally(() => setIsLookingUpCep(false));
+  };
+
   const handleUploadPhotos = async (
     field: "imageUrls" | "resolutionImageUrls",
     event: ChangeEvent<HTMLInputElement>
@@ -312,12 +380,9 @@ export default function MySolicitationsPage() {
     if (!editDraft) return;
 
     const files = Array.from(event.target.files ?? []);
-    const remainingSlots =
-      MAX_PHOTOS_PER_SECTION - editDraft[field].length;
+    const remainingSlots = MAX_PHOTOS_PER_SECTION - editDraft[field].length;
 
-    if (files.length === 0 || remainingSlots <= 0) {
-      return;
-    }
+    if (files.length === 0 || remainingSlots <= 0) return;
 
     setIsUploadingPhotos(true);
 
@@ -360,37 +425,54 @@ export default function MySolicitationsPage() {
     );
   };
 
-  const handleSaveSolicitation = () => {
+  const handleSaveSolicitation = async () => {
     if (!editDraft) return;
 
-    setMySolicitations((currentItems) =>
-      currentItems.map((item) =>
-        item.id === editDraft.id
-          ? {
-              ...item,
-              title: editDraft.title.trim(),
-              description: editDraft.description.trim(),
-              neighborhood: editDraft.neighborhood.trim(),
-              street: editDraft.street.trim(),
-              imageUrls: editDraft.imageUrls.map((photo) => photo.uri),
-              resolutionImageUrls: editDraft.resolutionImageUrls.map(
-                (photo) => photo.uri
-              ),
-            }
-          : item
-      )
-    );
+    setIsSaving(true);
+    try {
+      const updated = await updateSolicitation(editDraft.id, {
+        title: editDraft.title.trim(),
+        description: editDraft.description.trim(),
+        neighborhood: editDraft.neighborhood.trim(),
+        street: editDraft.street.trim(),
+        cep: editDraft.cep.trim(),
+      });
 
-    handleCloseEditModal();
+      const updatedRecord = mapSolicitationDTOToRecord(updated);
+
+      setMySolicitations((currentItems) =>
+        currentItems.map((item) =>
+          item.id === editDraft.id
+            ? {
+                ...updatedRecord,
+                imageUrls: updatedRecord.imageUrls.slice(0, MAX_PHOTOS_PER_SECTION),
+                resolutionImageUrls: updatedRecord.resolutionImageUrls.slice(
+                  0,
+                  MAX_PHOTOS_PER_SECTION
+                ),
+              }
+            : item
+        )
+      );
+      handleCloseEditModal();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleConfirmDeleteSolicitation = () => {
+  const handleConfirmDeleteSolicitation = async () => {
     if (!deleteTarget) return;
 
-    setMySolicitations((currentItems) =>
-      currentItems.filter((item) => item.id !== deleteTarget.id)
-    );
-    handleCloseDeleteModal();
+    setIsDeleting(true);
+    try {
+      await deleteSolicitation(deleteTarget.id);
+      setMySolicitations((currentItems) =>
+        currentItems.filter((item) => item.id !== deleteTarget.id)
+      );
+      handleCloseDeleteModal();
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -399,7 +481,7 @@ export default function MySolicitationsPage() {
         size="middle"
         sectionClassName="items-stretch gap-8 !px-4 !py-8 sm:!px-6 lg:!px-8 lg:!py-10"
       >
-        <section className="flex flex-col gap-6 rounded-[2rem] border border-border-card/70 bg-white/70 p-5 shadow-[0_32px_80px_-52px_rgba(15,23,42,0.45)] backdrop-blur-sm dark:bg-bg-card/80 sm:p-7">
+        <section className="flex flex-col gap-6 rounded-[2rem] border border-border-card/70 bg-white/80 p-5 shadow-[0_32px_80px_-52px_rgba(15,23,42,0.45)] backdrop-blur-sm dark:bg-bg-card/80 sm:p-7">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
             <div className="space-y-3">
               <div className="inline-flex items-center gap-3 rounded-sm bg-background px-4 py-2 text-sm font-medium text-foreground/80">
@@ -418,23 +500,33 @@ export default function MySolicitationsPage() {
                 </p>
               </div>
 
-              <p className="text-sm font-medium text-foreground/70 sm:text-base">
-                Você possui{" "}
-                <span className="font-bold text-foreground">
-                  {mySolicitations.length} solicitações cadastradas
-                </span>
-                .
-              </p>
+              {!isLoading && (
+                <p className="text-sm font-medium text-foreground/70 sm:text-base">
+                  Você possui{" "}
+                  <span className="font-bold text-foreground">
+                    {mySolicitations.length} solicitações cadastradas
+                  </span>
+                  .
+                </p>
+              )}
             </div>
 
-            <Button
-              type="button"
-              label="Cadastrar situação"
-              onClick={() =>
-                router.push(buildScopedHref(pathname, "/cadastrar-situacao"))
-              }
-              className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 sm:w-auto"
-            />
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
+              <Button
+                type="button"
+                label="Cadastrar solicitação"
+                disabled={hasReachedOpenLimit}
+                onClick={() =>
+                  router.push(buildScopedHref(pathname, "/cadastrar-situacao"))
+                }
+                className="w-full justify-center rounded-sm px-6 py-3 text-sm font-medium !bg-primary-500 !text-white hover:!bg-primary-600 disabled:cursor-not-allowed disabled:!bg-primary-500/50 sm:w-auto"
+              />
+              {hasReachedOpenLimit && (
+                <p className="max-w-xs text-xs leading-5 text-alert-700 dark:text-alert-100 sm:text-right">
+                  {OPEN_SOLICITATIONS_LIMIT_MESSAGE}
+                </p>
+              )}
+            </div>
           </div>
         </section>
 
@@ -450,8 +542,9 @@ export default function MySolicitationsPage() {
             setSelectedStatus(value as SolicitationStatus | "all")
           }
           requestingUserId={selectedRequestingUserId}
-          requestingUsers={requestingUserOptions}
+          requestingUsers={[]}
           onRequestingUserIdChange={setSelectedRequestingUserId}
+          showRequestingUserFilter={false}
           dateOrder={dateOrder}
           onDateOrderChange={setDateOrder}
           onResetFilters={handleResetFilters}
@@ -464,14 +557,22 @@ export default function MySolicitationsPage() {
                 Listagem das minhas solicitações
               </h2>
               <p className="text-sm text-foreground/65">
-                {hasActiveFilters
+                {isLoading
+                  ? "Carregando suas solicitações..."
+                  : hasActiveFilters
                   ? `Exibindo ${filteredSolicitations.length} de ${mySolicitations.length} resultados encontrados.`
                   : `Exibindo ${filteredSolicitations.length} resultados cadastrados por ${authenticatedUser.name}.`}
               </p>
             </div>
           </div>
 
-          {filteredSolicitations.length > 0 ? (
+          {isLoading ? (
+            <div className="rounded-[2rem] border border-border-card bg-bg-card p-10 text-center shadow-sm">
+              <p className="text-sm text-foreground/65">
+                Carregando suas solicitações...
+              </p>
+            </div>
+          ) : filteredSolicitations.length > 0 ? (
             <PaginationList
               page={page}
               itemsPerPage={5}
@@ -494,7 +595,9 @@ export default function MySolicitationsPage() {
                 <SolicitationCard
                   key={solicitation.id}
                   title={solicitation.title}
+                  protocolNumber={solicitation.protocolNumber}
                   requestingUserId={solicitation.requestingUserId}
+                  requestingUserName={solicitation.requestingUserName}
                   description={solicitation.description}
                   imageUrls={solicitation.imageUrls}
                   neighborhood={solicitation.neighborhood}
@@ -538,8 +641,10 @@ export default function MySolicitationsPage() {
         showCancelButton
         showConfirmButton
         cancelButtonLabel="Cancelar"
-        confirmButtonLabel={isUploadingPhotos ? "Processando..." : "Salvar alterações"}
-        confirmButtonDisabled={isEditFormInvalid || isUploadingPhotos}
+        confirmButtonLabel={
+          isSaving || isUploadingPhotos ? "Processando..." : "Salvar alterações"
+        }
+        confirmButtonDisabled={isEditFormInvalid || isUploadingPhotos || isSaving}
         onConfirm={handleSaveSolicitation}
         cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
         confirmButtonClassName="rounded-sm bg-primary-500 px-5 py-3 font-medium text-white hover:bg-primary-600"
@@ -565,6 +670,22 @@ export default function MySolicitationsPage() {
               disabled
               className="w-full bg-transparent text-foreground"
               containerClassName="w-full"
+            />
+
+            <TextInput
+              id="edit-solicitation-cep"
+              label="CEP"
+              value={editDraft.cep}
+              onChange={(event) => handleChangeDraftCep(event.target.value)}
+              placeholder="Ex.: 30130-000"
+              inputMode="numeric"
+              maxLength={9}
+              helperText={
+                isLookingUpCep
+                  ? "Buscando endereço pelo CEP..."
+                  : "Informe o CEP para preencher o bairro e a rua automaticamente."
+              }
+              containerClassName="w-full md:col-span-2"
             />
 
             <TextInput
@@ -703,13 +824,14 @@ export default function MySolicitationsPage() {
         open={Boolean(deleteTarget)}
         onClose={handleCloseDeleteModal}
         title="Confirmar remoção"
-        description="Essa ação remove a solicitação apenas da sua listagem atual."
+        description="Essa ação remove permanentemente a solicitação."
         size="sm"
         className="rounded-[1.75rem] border border-border-card/70 bg-bg-card"
         showCancelButton
         showConfirmButton
         cancelButtonLabel="Voltar"
-        confirmButtonLabel="Remover solicitação"
+        confirmButtonLabel={isDeleting ? "Removendo..." : "Remover solicitação"}
+        confirmButtonDisabled={isDeleting}
         onConfirm={handleConfirmDeleteSolicitation}
         cancelButtonClassName="rounded-2xl border border-foreground/15 bg-background px-5 py-3 font-semibold text-foreground hover:bg-foreground/5"
         confirmButtonClassName="rounded-sm bg-destructive-500 px-5 py-3 font-medium text-white hover:bg-destructive-600"
@@ -723,11 +845,11 @@ export default function MySolicitationsPage() {
             />
             <div className="space-y-2">
               <p className="font-semibold text-foreground">
-                Deseja remover <span className="text-destructive-500">{deleteTarget.title}</span>?
+                Deseja remover{" "}
+                <span className="text-destructive-500">{deleteTarget.title}</span>?
               </p>
               <p>
-                Depois de confirmar, o item será retirado da listagem de
-                solicitações visível nesta sessão.
+                Depois de confirmar, o item será permanentemente removido.
               </p>
             </div>
           </div>

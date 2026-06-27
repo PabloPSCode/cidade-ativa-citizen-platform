@@ -20,8 +20,10 @@ import {
   type SolicitationRecord,
 } from "../constants/solicitations";
 
-export interface SolicitationDetailsCardProps
-  extends Omit<SolicitationRecord, "id"> {
+export interface SolicitationDetailsCardProps extends Omit<
+  SolicitationRecord,
+  "id"
+> {
   className?: string;
   entityLabel?: string;
   statusLabel?: string;
@@ -51,7 +53,7 @@ function DetailsInfoBlock({
     <div
       className={clsx(
         "rounded-[1.35rem] bg-background/80 p-4 dark:bg-white/[0.03]",
-        className
+        className,
       )}
     >
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
@@ -117,6 +119,7 @@ function DetailsImageSection({
 export default function SolicitationDetailsCard({
   protocolNumber,
   requestingUserId,
+  requestingUserName,
   description,
   resolutionComment,
   imageUrls,
@@ -125,6 +128,7 @@ export default function SolicitationDetailsCard({
   createdAt,
   resolvedAt,
   street,
+  cep,
   mapAddress,
   status,
   className,
@@ -146,7 +150,7 @@ export default function SolicitationDetailsCard({
     <article
       className={clsx(
         "solicitation-details-card Container rounded-[2rem] border border-border-card/70 bg-bg-card p-5 shadow-[0_32px_80px_-52px_rgba(15,23,42,0.45)] sm:p-6 lg:p-8",
-        className
+        className,
       )}
     >
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
@@ -158,13 +162,13 @@ export default function SolicitationDetailsCard({
             <span
               className={clsx(
                 "inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold sm:text-sm",
-                statusConfig.badgeClassName
+                statusConfig.badgeClassName,
               )}
             >
               <span
                 className={clsx(
                   "h-2.5 w-2.5 rounded-full",
-                  statusConfig.dotClassName
+                  statusConfig.dotClassName,
                 )}
               />
               {statusLabel ?? statusConfig.label}
@@ -181,7 +185,7 @@ export default function SolicitationDetailsCard({
         <DetailsInfoBlock
           label={requestingUserLabel}
           icon={<UserCircleIcon size={18} weight="fill" />}
-          value={requestingUserId}
+          value={requestingUserName || requestingUserId}
         />
 
         <DetailsInfoBlock
@@ -222,12 +226,20 @@ export default function SolicitationDetailsCard({
         />
       </div>
 
-      <div className="mt-6 grid gap-5 xl:grid-cols-3">
+      <div className="mt-6 flex flex-col gap-6">
         <section className="rounded-[1.6rem] border border-border-card/60 bg-background/70 p-5 dark:bg-white/[0.02]">
-          <h3 className="text-lg font-black tracking-tight">
+          <div className="grid gap-4 xl:grid-cols-2">
+            <DetailsImageSection title={beforeImagesLabel} images={imageUrls} />
+            <DetailsImageSection
+              title={afterImagesLabel}
+              images={resolutionImageUrls}
+            />
+          </div>
+          <h3 className="text-lg font-black tracking-tight mt-4">
             {mapSectionTitle}
           </h3>
           <GoogleMapsRender
+            cep={cep}
             address={mapAddress}
             aspect="4:3"
             minHeight={300}
@@ -236,12 +248,6 @@ export default function SolicitationDetailsCard({
             title={`${mapTitlePrefix} ${protocolNumber}`}
           />
         </section>
-
-        <DetailsImageSection title={beforeImagesLabel} images={imageUrls} />
-        <DetailsImageSection
-          title={afterImagesLabel}
-          images={resolutionImageUrls}
-        />
       </div>
     </article>
   );

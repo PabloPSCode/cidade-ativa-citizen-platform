@@ -9,7 +9,10 @@ import {
 } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useEffect, type Dispatch, type SetStateAction } from "react";
-import { SearchInput } from "../../libs/react-ultimate-components/src";
+import {
+  SearchInput,
+  SelectInput,
+} from "../../libs/react-ultimate-components/src";
 import type { SolicitationStatus } from "../constants/solicitations";
 
 export interface FilterSearchCardProps {
@@ -25,16 +28,17 @@ export interface FilterSearchCardProps {
   }>;
   onStatusChange: (value: SolicitationStatus | "all") => void;
   requestingUserId: string;
-  requestingUsers: string[];
+  requestingUsers: Array<{ id: string; name: string }>;
   onRequestingUserIdChange: (value: string) => void;
   dateOrder: "recent" | "oldest";
   onDateOrderChange: (value: "recent" | "oldest") => void;
   onResetFilters: () => void;
+  showRequestingUserFilter?: boolean;
   className?: string;
 }
 
-const selectClassName =
-  "h-12 w-full rounded-[1.2rem] border border-border-card/60 bg-background/80 px-4 text-sm font-semibold text-foreground outline-none transition focus:border-foreground/30 dark:bg-white/[0.03]";
+const labelClassName =
+  "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45";
 
 const SEARCH_SCROLL_DELAY_MS = 2000;
 const SEARCH_RESULTS_SECTION_ID = "solicitacoes-listagem";
@@ -54,6 +58,7 @@ export default function FilterSearchCard({
   dateOrder,
   onDateOrderChange,
   onResetFilters,
+  showRequestingUserFilter = true,
   className,
 }: FilterSearchCardProps) {
   useEffect(() => {
@@ -67,6 +72,31 @@ export default function FilterSearchCard({
 
     return () => window.clearTimeout(timeoutId);
   }, [search]);
+
+  const neighborhoodOptions = [
+    { label: "Todos os bairros", value: "all" },
+    ...neighborhoods.map((option) => ({ label: option, value: option })),
+  ];
+  const statusOptions = [
+    { label: "Todos os status", value: "all" },
+    ...statuses.map((option) => ({ label: option.label, value: option.value })),
+  ];
+  const requestingUserOptions = [
+    { label: "Todos os requerentes", value: "all" },
+    ...requestingUsers.map((option) => ({
+      label: option.name,
+      value: option.id,
+    })),
+  ];
+  const dateOrderOptions = [
+    { label: "Mais recentes", value: "recent" },
+    { label: "Mais antigas", value: "oldest" },
+  ];
+
+  const findOption = (
+    items: Array<{ label: string; value: string }>,
+    value: string
+  ) => items.find((option) => option.value === value) ?? null;
 
   return (
     <section
@@ -105,81 +135,79 @@ export default function FilterSearchCard({
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          <label className="flex flex-col gap-2">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              <MapPinIcon size={14} weight="fill" />
-              Bairro
-            </span>
-            <select
-              value={neighborhood}
-              onChange={(event) => onNeighborhoodChange(event.target.value)}
-              className={selectClassName}
-            >
-              <option value="all">Todos os bairros</option>
-              {neighborhoods.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
+          <SelectInput
+            label={
+              <>
+                <MapPinIcon size={14} weight="fill" />
+                Bairro
+              </>
+            }
+            labelClassName={labelClassName}
+            options={neighborhoodOptions}
+            value={findOption(neighborhoodOptions, neighborhood)}
+            onSelectOption={(option) =>
+              onNeighborhoodChange(String(option?.value ?? "all"))
+            }
+            placeholder="Todos os bairros"
+            containerClassName="w-full"
+          />
 
-          <label className="flex flex-col gap-2">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              <SpinnerGapIcon size={14} weight="bold" />
-              Status
-            </span>
-            <select
-              value={status}
-              onChange={(event) =>
-                onStatusChange(event.target.value as SolicitationStatus | "all")
+          <SelectInput
+            label={
+              <>
+                <SpinnerGapIcon size={14} weight="bold" />
+                Status
+              </>
+            }
+            labelClassName={labelClassName}
+            options={statusOptions}
+            value={findOption(statusOptions, status)}
+            onSelectOption={(option) =>
+              onStatusChange(
+                (option?.value ?? "all") as SolicitationStatus | "all"
+              )
+            }
+            placeholder="Todos os status"
+            isSearchable={false}
+            containerClassName="w-full"
+          />
+
+          {showRequestingUserFilter && (
+            <SelectInput
+              label={
+                <>
+                  <UserCircleIcon size={14} weight="fill" />
+                  Requerente
+                </>
               }
-              className={selectClassName}
-            >
-              <option value="all">Todos os status</option>
-              {statuses.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-2">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              <UserCircleIcon size={14} weight="fill" />
-              Requerente
-            </span>
-            <select
-              value={requestingUserId}
-              onChange={(event) => onRequestingUserIdChange(event.target.value)}
-              className={selectClassName}
-            >
-              <option value="all">Todos os requerentes</option>
-              {requestingUsers.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-2">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              <ArrowsDownUpIcon size={14} weight="bold" />
-              Data da solicitação
-            </span>
-            <select
-              value={dateOrder}
-              onChange={(event) =>
-                onDateOrderChange(event.target.value as "recent" | "oldest")
+              labelClassName={labelClassName}
+              options={requestingUserOptions}
+              value={findOption(requestingUserOptions, requestingUserId)}
+              onSelectOption={(option) =>
+                onRequestingUserIdChange(String(option?.value ?? "all"))
               }
-              className={selectClassName}
-            >
-              <option value="recent">Mais recentes</option>
-              <option value="oldest">Mais antigas</option>
-            </select>
-          </label>
+              placeholder="Todos os requerentes"
+              containerClassName="w-full"
+            />
+          )}
+
+          <SelectInput
+            label={
+              <>
+                <ArrowsDownUpIcon size={14} weight="bold" />
+                Data da solicitação
+              </>
+            }
+            labelClassName={labelClassName}
+            options={dateOrderOptions}
+            value={findOption(dateOrderOptions, dateOrder)}
+            onSelectOption={(option) =>
+              onDateOrderChange((option?.value ?? "recent") as "recent" | "oldest")
+            }
+            placeholder="Ordenar por data"
+            isSearchable={false}
+            containerClassName="w-full"
+          />
         </div>
       </div>
     </section>
