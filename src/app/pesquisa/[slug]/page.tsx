@@ -77,10 +77,6 @@ export default function Home() {
     setPriceRange([minPrice, maxPrice]);
   };
 
-  useEffect(() => {
-    console.log(selectedCategories);
-    console.log(priceRange);
-  }, [selectedCategories, priceRange]);
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchTerm.trim().toLowerCase();
