@@ -1,8 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 
 interface SubItem {
   label: string;
@@ -116,6 +116,17 @@ export default function TopMenu({
   wrapperClassName,
 }: TopMenuProps) {
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Fecha qualquer submenu aberto sempre que a página muda. Como o submenu abre
+  // via CSS (`group-focus-within`), ao clicar em um item o link permanece com
+  // foco após a navegação client-side e o dropdown ficaria aberto — remover o
+  // foco do elemento ativo recolhe o menu.
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    (document.activeElement as HTMLElement | null)?.blur();
+  }, [pathname]);
+
   const handleNavigate =
     (href?: string, onSeeItem?: () => void) =>
     (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
