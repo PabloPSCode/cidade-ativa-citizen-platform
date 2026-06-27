@@ -270,7 +270,7 @@ export default function PollsPage() {
                     description={poll.description}
                     status={poll.status}
                     pollCoverUrl={poll.pollCoverUrl}
-                    createdAt={poll.createdAt}
+                    startedAt={poll.startedAt}
                     finishedAt={poll.finishedAt}
                     votesCount={voteCounts[poll.id] ?? 0}
                     hasVoted={hasVoted}

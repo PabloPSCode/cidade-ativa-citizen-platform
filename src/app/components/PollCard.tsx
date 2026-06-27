@@ -15,7 +15,7 @@ export interface PollCardProps {
   description: string;
   status: PollStatus;
   pollCoverUrl?: string;
-  createdAt: string | Date;
+  startedAt: string | Date | null;
   finishedAt: string | Date | null;
   votesCount: number;
   hasVoted?: boolean;
@@ -29,7 +29,7 @@ export default function PollCard({
   description,
   status,
   pollCoverUrl,
-  createdAt,
+  startedAt,
   finishedAt,
   votesCount,
   hasVoted,
@@ -87,7 +87,7 @@ export default function PollCard({
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-            Criada em
+            Início
           </p>
           <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
             <CalendarDotsIcon
@@ -95,7 +95,7 @@ export default function PollCard({
               weight="fill"
               className="shrink-0 text-foreground/55"
             />
-            <span>{formatPollDate(createdAt)}</span>
+            <span>{formatPollDate(startedAt)}</span>
           </div>
         </div>
 
