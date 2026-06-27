@@ -20,6 +20,7 @@ export interface SolicitationResponseDTO {
   requestingUserId: string;
   requestingUserName: string;
   solicitationTypeId: string;
+  isCollective: boolean;
   status: SolicitationStatus;
   unsolvedImageUrls: string[];
   solvedImageUrls: string[] | null;
@@ -38,6 +39,7 @@ export interface CreateSolicitationDTO {
   cep: string;
   requestingUserId: string;
   solicitationTypeId: string;
+  isCollective?: boolean;
   unsolvedImageUrls?: string[];
   protocolNumber?: string;
 }
@@ -48,6 +50,7 @@ export interface UpdateSolicitationDTO {
   neighborhood?: string;
   street?: string;
   cep?: string;
+  isCollective?: boolean;
   status?: SolicitationStatus;
   solvedImageUrls?: string[];
   solvedDate?: Date;

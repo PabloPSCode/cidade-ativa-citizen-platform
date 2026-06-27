@@ -7,6 +7,7 @@ import {
   SpinnerGapIcon,
   TrashIcon,
   UserCircleIcon,
+  UsersThreeIcon,
 } from "@phosphor-icons/react";
 import clsx from "clsx";
 import Image from "next/image";
@@ -41,6 +42,7 @@ export default function SolicitationCard({
   createdAt,
   street,
   status,
+  isCollective,
   className,
   detailsHref,
   titleLabel = "Solicitação",
@@ -123,6 +125,17 @@ export default function SolicitationCard({
                   />
                   {statusLabel ?? statusConfig.label}
                 </span>
+
+                {isCollective ? (
+                  <span
+                    title="Ação coletiva"
+                    aria-label="Ação coletiva"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-success-500 px-3 py-1 text-xs font-semibold text-white"
+                  >
+                    <UsersThreeIcon size={14} weight="fill" />
+                    Coletiva
+                  </span>
+                ) : null}
               </div>
             </div>
           </div>

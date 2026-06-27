@@ -426,6 +426,7 @@ export default function Home() {
                   createdAt={solicitation.createdAt}
                   street={solicitation.street}
                   status={solicitation.status}
+                  isCollective={solicitation.isCollective}
                   detailsHref={buildSolicitationDetailsHref(solicitation.id)}
                 />
               ))}

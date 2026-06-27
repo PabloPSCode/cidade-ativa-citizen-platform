@@ -1,10 +1,11 @@
 "use client";
 
-import { UserCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
+import { InfoIcon, UserCircleIcon, WarningCircleIcon } from "@phosphor-icons/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
     Button,
+    Checkbox,
     DateInput,
     FileInput,
     ModalsGenericModal as GenericModal,
@@ -12,6 +13,7 @@ import {
     Section,
     TextAreaInput,
     TextInput,
+    Tooltip,
     UploadedFilePreview,
 } from "../../libs/react-ultimate-components/src";
 import { fetchAddressByCep } from "../../services/cep";
@@ -56,6 +58,7 @@ interface EditableSolicitationDraft {
   neighborhood: string;
   street: string;
   cep: string;
+  isCollective: boolean;
   createdAt: string;
   imageUrls: EditablePhotoPreview[];
   resolutionImageUrls: EditablePhotoPreview[];
@@ -81,6 +84,7 @@ const createDraftFromSolicitation = (
   neighborhood: solicitation.neighborhood,
   street: solicitation.street,
   cep: solicitation.cep,
+  isCollective: solicitation.isCollective ?? false,
   createdAt: solicitation.createdAt,
   imageUrls: solicitation.imageUrls
     .slice(0, MAX_PHOTOS_PER_SECTION)
@@ -436,6 +440,7 @@ export default function MySolicitationsPage() {
         neighborhood: editDraft.neighborhood.trim(),
         street: editDraft.street.trim(),
         cep: editDraft.cep.trim(),
+        isCollective: editDraft.isCollective,
       });
 
       const updatedRecord = mapSolicitationDTOToRecord(updated);
@@ -604,6 +609,7 @@ export default function MySolicitationsPage() {
                   createdAt={solicitation.createdAt}
                   street={solicitation.street}
                   status={solicitation.status}
+                  isCollective={solicitation.isCollective}
                   detailsHref={buildScopedHref(
                     pathname,
                     buildSolicitationDetailsHref(solicitation.id)
@@ -723,6 +729,31 @@ export default function MySolicitationsPage() {
                 placeholder="Descreva a solicitação com mais detalhes"
                 containerClassName="w-full"
               />
+            </div>
+
+            <div className="flex items-center gap-2 md:col-span-2">
+              <Checkbox
+                checked={editDraft.isCollective}
+                onChange={(event) =>
+                  setEditDraft((currentDraft) =>
+                    currentDraft
+                      ? { ...currentDraft, isCollective: event.target.checked }
+                      : currentDraft
+                  )
+                }
+                helperText="Essa ação é coletiva"
+              />
+
+              <button
+                type="button"
+                aria-label="O que é uma ação coletiva?"
+                data-tooltip-id="edit-collective-tooltip"
+                data-tooltip-content="Marque caso você deseje que outros cidadãos reforcem e concordem com sua solicitação."
+                className="mt-1 inline-flex text-foreground/55 transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/40"
+              >
+                <InfoIcon size={18} weight="fill" />
+              </button>
+              <Tooltip id="edit-collective-tooltip" place="right" />
             </div>
 
             <section className="space-y-3 rounded-[1.5rem] border border-border-card/60 bg-background/70 p-4 dark:bg-white/[0.02]">

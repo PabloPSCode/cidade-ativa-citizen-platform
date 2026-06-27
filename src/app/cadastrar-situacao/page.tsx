@@ -2,15 +2,16 @@
 
 import {
   CameraIcon,
+  InfoIcon,
   MapPinAreaIcon,
   NotePencilIcon,
-  UserCircleIcon,
-  WarningCircleIcon,
+  WarningCircleIcon
 } from "@phosphor-icons/react";
-import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import {
   Button,
+  Checkbox,
   DateInput,
   FileInput,
   Section,
@@ -18,18 +19,19 @@ import {
   StepProgress,
   TextAreaInput,
   TextInput,
+  Tooltip,
   UploadedFilePreview,
 } from "../../libs/react-ultimate-components/src";
-import { useAuth } from "../hooks/useAuth";
-import { useNeighborhoods } from "../hooks/useNeighborhoods";
-import { buildScopedHref } from "../lib/site-paths";
-import { createSolicitation } from "../../services/solicitations";
+import { fetchAddressByCep } from "../../services/cep";
 import {
   listSolicitationTypes,
   type SolicitationTypeResponseDTO,
 } from "../../services/solicitation-types";
+import { createSolicitation } from "../../services/solicitations";
 import { formatCep, isValidCep } from "../constants/solicitations";
-import { fetchAddressByCep } from "../../services/cep";
+import { useAuth } from "../hooks/useAuth";
+import { useNeighborhoods } from "../hooks/useNeighborhoods";
+import { buildScopedHref } from "../lib/site-paths";
 
 const MAX_DESCRIPTION_LENGTH = 320;
 const MAX_IMAGES = 2;
@@ -95,6 +97,7 @@ interface RegisterSolicitationForm {
   neighborhood: string;
   street: string;
   cep: string;
+  isCollective: boolean;
 }
 
 const hasAcceptedExtension = (fileName: string) =>
@@ -157,6 +160,7 @@ export default function RegisterSolicitationPage() {
     neighborhood: "",
     street: "",
     cep: "",
+    isCollective: false,
   });
   const [occurrenceDate, setOccurrenceDate] = useState(new Date());
   const [images, setImages] = useState<RegisterImagePreview[]>([]);
@@ -359,6 +363,7 @@ export default function RegisterSolicitationPage() {
         neighborhood: form.neighborhood.trim(),
         street: form.street.trim(),
         cep: form.cep.trim(),
+        isCollective: form.isCollective,
         requestingUserId: authenticatedUser.userId,
         solicitationTypeId: form.solicitationTypeId,
         unsolvedImageUrls: images.map((img) => img.uri),
@@ -482,6 +487,30 @@ export default function RegisterSolicitationPage() {
                     currentTextLength={form.description.length}
                     containerClassName="w-full"
                   />
+                </div>
+
+                <div className="flex items-center gap-2 lg:col-span-2">
+                  <Checkbox
+                    checked={form.isCollective}
+                    onChange={(event) =>
+                      setForm((currentForm) => ({
+                        ...currentForm,
+                        isCollective: event.target.checked,
+                      }))
+                    }
+                    helperText="Essa ação é coletiva"
+                  />
+
+                  <button
+                    type="button"
+                    aria-label="O que é uma ação coletiva?"
+                    data-tooltip-id="collective-tooltip"
+                    data-tooltip-content="Marque caso você deseje que outros cidadãos reforcem e concordem com sua solicitação."
+                    className="mt-1 inline-flex text-foreground/55 transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400/40"
+                  >
+                    <InfoIcon size={18} weight="fill" />
+                  </button>
+                  <Tooltip id="collective-tooltip" place="right" />
                 </div>
               </div>
             </div>

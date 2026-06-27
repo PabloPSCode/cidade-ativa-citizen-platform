@@ -18,6 +18,8 @@ export interface SolicitationSummary {
   neighborhood: string;
   createdAt: string;
   street: string;
+  /** Indica se a solicitação representa uma ação coletiva. */
+  isCollective?: boolean;
   status: SolicitationStatus;
 }
 
@@ -144,6 +146,7 @@ export function mapSolicitationDTOToRecord(
     createdAt,
     street: dto.street,
     cep: dto.cep ?? "",
+    isCollective: dto.isCollective ?? false,
     status: dto.status,
     mapAddress: `${dto.street}, ${dto.neighborhood}, Brasil`,
     resolutionComment: dto.solvedCommentary ?? "",
