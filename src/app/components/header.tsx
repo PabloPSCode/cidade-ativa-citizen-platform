@@ -139,7 +139,12 @@ export default function Header() {
           {hasHydrated ? (
             isAuthenticated && authenticatedUser ? (
               <div className="flex items-center">
-                <div className="flex items-center gap-2 rounded-sm bg-foreground/5 px-2 py-1.5 dark:bg-white/5 md:gap-3 md:px-3 md:py-2">
+                <Link
+                  href={buildScopedHref(pathname, "/perfil")}
+                  title="Meu perfil"
+                  aria-label="Meu perfil"
+                  className="flex items-center gap-2 rounded-sm bg-foreground/5 px-2 py-1.5 transition hover:bg-foreground/10 dark:bg-white/5 dark:hover:bg-white/10 md:gap-3 md:px-3 md:py-2"
+                >
                   {authenticatedUser.photoUrl ? (
                     <Image
                       src={authenticatedUser.photoUrl}
@@ -154,7 +159,10 @@ export default function Header() {
                       {authenticatedUser.name.charAt(0).toUpperCase()}
                     </span>
                   )}
-                </div>
+                  <span className="hidden text-sm font-medium text-foreground/80 md:inline">
+                    {authenticatedUser.name.split(" ")[0]}
+                  </span>
+                </Link>
 
                 <button
                   type="button"
