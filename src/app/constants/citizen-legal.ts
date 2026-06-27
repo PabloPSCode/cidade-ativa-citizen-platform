@@ -177,6 +177,7 @@ const actionTemplates: Array<
     | "citizenId"
     | "citizenName"
     | "requestingUserId"
+    | "requestingUserName"
   >
 > = [
   {
@@ -185,6 +186,7 @@ const actionTemplates: Array<
       "Organização de mutirão comunitário para limpeza da praça principal e orientação sobre descarte correto de resíduos.",
     neighborhood: "Centro",
     street: "Praça da Estação, 120",
+    cep: "30160-012",
     mapAddress: "Praça da Estação, 120, Centro, Belo Horizonte - MG, Brasil",
     imageUrls: beforeImageSets[0],
     resolutionComment:
@@ -197,6 +199,7 @@ const actionTemplates: Array<
       "Plantio de mudas nativas em corredor escolar para ampliar sombra, reduzir calor e incentivar educação ambiental entre crianças.",
     neighborhood: "Jardim Primavera",
     street: "Rua das Mangueiras, 88",
+    cep: "32010-000",
     mapAddress:
       "Rua das Mangueiras, 88, Jardim Primavera, Contagem - MG, Brasil",
     imageUrls: beforeImageSets[1],
@@ -210,6 +213,7 @@ const actionTemplates: Array<
       "Campanha de arrecadação e distribuição de agasalhos com pontos de coleta em comércios de bairro e apoio de voluntários locais.",
     neighborhood: "Nova Esperança",
     street: "Avenida Solidária, 54",
+    cep: "32600-000",
     mapAddress:
       "Avenida Solidária, 54, Nova Esperança, Betim - MG, Brasil",
     imageUrls: beforeImageSets[2],
@@ -223,6 +227,7 @@ const actionTemplates: Array<
       "Mapeamento colaborativo de pontos com acessibilidade comprometida para encaminhamento formal ao poder público e acompanhamento cidadão.",
     neighborhood: "Vila Aurora",
     street: "Rua do Fórum, 17",
+    cep: "32604-115",
     mapAddress: "Rua do Fórum, 17, Vila Aurora, Betim - MG, Brasil",
     imageUrls: beforeImageSets[3],
     resolutionComment:
@@ -235,6 +240,7 @@ const actionTemplates: Array<
       "Oficina cidadã sobre reciclagem, uso consciente dos espaços públicos e preservação de áreas verdes com participação de lideranças comunitárias.",
     neighborhood: "Parque dos Girassóis",
     street: "Rua dos Ipês, 230",
+    cep: "33400-000",
     mapAddress:
       "Rua dos Ipês, 230, Parque dos Girassóis, Lagoa Santa - MG, Brasil",
     imageUrls: beforeImageSets[4],
@@ -248,6 +254,7 @@ const actionTemplates: Array<
       "Apoio voluntário à travessia segura em frente à escola municipal com orientação a motoristas e reforço de sinalização comunitária.",
     neighborhood: "Residencial do Lago",
     street: "Rua da Escola, 312",
+    cep: "34000-000",
     mapAddress:
       "Rua da Escola, 312, Residencial do Lago, Nova Lima - MG, Brasil",
     imageUrls: beforeImageSets[5],
@@ -300,7 +307,8 @@ export const citizenLegalActions: CitizenLegalActionRecord[] =
         protocolNumber: `ACL-${String(citizen.position).padStart(2, "0")}${String(
           actionIndex + 1
         ).padStart(2, "0")}`,
-        requestingUserId: citizen.fullName,
+        requestingUserId: citizen.id,
+        requestingUserName: citizen.fullName,
         createdAt,
         resolvedAt,
         status,

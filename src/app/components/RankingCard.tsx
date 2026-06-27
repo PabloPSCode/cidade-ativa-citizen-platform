@@ -1,16 +1,15 @@
 "use client";
 
-import { CalendarDotsIcon, MedalIcon } from "@phosphor-icons/react";
+import { ListChecksIcon, MedalIcon } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import { Button } from "../../libs/react-ultimate-components/src";
-import { formatCitizenLegalDate } from "../constants/citizen-legal";
 
 export interface RankingCardProps {
   position: number;
   fullName: string;
   points: number;
-  createdAt: string;
+  actionsCount: number;
   className?: string;
   actionsLabel?: string;
   actionsHref?: string;
@@ -26,7 +25,7 @@ const positionStyles: Record<
 > = {
   1: {
     medalClassName: "bg-[#f2c94c] text-[#3f2f00]",
-    cardClassName: "border-primary-500/35",
+    cardClassName: "border-border-card",
     avatarClassName: "bg-primary-500 text-white",
   },
   2: {
@@ -53,7 +52,7 @@ export default function RankingCard({
   position,
   fullName,
   points,
-  createdAt,
+  actionsCount,
   className,
   actionsLabel = "Ver ações",
   actionsHref,
@@ -120,15 +119,15 @@ export default function RankingCard({
 
           <div className="rounded-[1.25rem] bg-background/80 p-4 dark:bg-white/[0.03]">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/45">
-              Data de cadastro
+              Ações realizadas
             </p>
             <div className="mt-2 flex items-center gap-2 text-sm font-semibold text-foreground sm:text-base">
-              <CalendarDotsIcon
+              <ListChecksIcon
                 size={18}
                 weight="fill"
                 className="shrink-0 text-foreground/55"
               />
-              <span>{formatCitizenLegalDate(createdAt)}</span>
+              <span>{actionsCount}</span>
             </div>
           </div>
         </div>

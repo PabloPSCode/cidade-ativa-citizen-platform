@@ -5,8 +5,8 @@ import { useParams } from "next/navigation";
 import { Section } from "../../../../../libs/react-ultimate-components/src";
 import SolicitationDetailsCard from "../../../../components/SolicitationDetailsCard";
 import {
-  buildCitizenLegalActionStatusLabel,
-  getCitizenLegalActionByIds,
+    buildCitizenLegalActionStatusLabel,
+    getCitizenLegalActionByIds,
 } from "../../../../constants/citizen-legal";
 
 export default function CitizenLegalActionDetailsPage() {
@@ -45,7 +45,7 @@ export default function CitizenLegalActionDetailsPage() {
         size="middle"
         sectionClassName="items-stretch gap-8 !px-4 !py-8 sm:!px-6 lg:!px-8 lg:!py-10"
       >
-        <section className="flex flex-col gap-3 rounded-[2rem] border border-border-card/70 bg-white/70 p-5 shadow-[0_32px_80px_-52px_rgba(15,23,42,0.45)] backdrop-blur-sm dark:bg-bg-card/80 sm:p-7">
+        <section className="flex flex-col gap-3 rounded-[2rem] border border-border-card/70 bg-white/80 p-5 shadow-[0_32px_80px_-52px_rgba(15,23,42,0.45)] backdrop-blur-sm dark:bg-bg-card/80 sm:p-7">
           <div className="inline-flex items-center gap-3 rounded-sm bg-background px-4 py-2 text-sm font-medium text-foreground/80">
             <IdentificationCardIcon size={22} weight="fill" />
             <span>Detalhes da ação cidadã</span>
