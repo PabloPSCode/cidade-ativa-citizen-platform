@@ -2,11 +2,11 @@
 
 import { MinusCircleIcon, PlusCircleIcon } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useId, useMemo, useState } from "react";
+import { useId, useMemo, useState, type ReactNode } from "react";
 
 export interface QuestionItem {
   question: string;
-  answer: string;
+  answer: ReactNode;
 }
 
 export interface AccordeonProps {

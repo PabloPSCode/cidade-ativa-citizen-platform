@@ -22,11 +22,13 @@ function parseAtCoords(url: string) {
 function buildEmbeddableUrl({
   raw,
   address,
+  cep,
   apiKey,
   zoom,
 }: {
   raw?: string;
   address?: string;
+  cep?: string;
   apiKey?: string;
   zoom?: number;
 }) {
@@ -49,10 +51,16 @@ function buildEmbeddableUrl({
     }
   }
 
-  // 3) Se endereço foi informado (ou como fallback)
-  if (address) {
+  // 3) CEP tem prioridade: geocodifica com precisão no Brasil. Quando há
+  // endereço, ele é anexado como complemento (mas o CEP lidera a busca).
+  const trimmedCep = cep?.trim();
+  const query = trimmedCep
+    ? [trimmedCep, address?.trim()].filter(Boolean).join(", ")
+    : address;
+
+  if (query) {
     return `https://www.google.com/maps?q=${encodeURIComponent(
-      address
+      query
     )}&output=embed`;
   }
 
@@ -71,6 +79,8 @@ export interface GoogleMapsRenderProps {
   embedUrl?: string;
   /** Endereço/lat,lng para montar um URL simples (usado se `embedUrl` não vier). */
   address?: string;
+  /** CEP da localização — tem prioridade sobre `address` ao montar o mapa. */
+  cep?: string;
   /** (Opcional) Chave da Maps Embed API — habilita zoom/mode precisos. */
   apiKey?: string;
   /** Força o zoom quando possível (melhor com `apiKey`). */
@@ -93,6 +103,7 @@ export interface GoogleMapsRenderProps {
 export default function GoogleMapsRender({
   embedUrl,
   address,
+  cep,
   apiKey,
   zoom,
   title = "Google Map",
@@ -102,7 +113,7 @@ export default function GoogleMapsRender({
   containerClassName,
   minHeight = 220,
 }: GoogleMapsRenderProps) {
-  const src = buildEmbeddableUrl({ raw: embedUrl, address, apiKey, zoom });
+  const src = buildEmbeddableUrl({ raw: embedUrl, address, cep, apiKey, zoom });
 
   if (!src) {
     return (

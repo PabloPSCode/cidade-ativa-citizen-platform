@@ -94,7 +94,7 @@ export { default as ItemsSearchList } from "./components/inputs/ItemsSearchList/
 export { default as MaskedTextInput } from "./components/inputs/MaskedTextInput/index";
 export { default as PasswordInput } from "./components/inputs/PasswordInput/index";
 export { default as RadioGroupInput } from "./components/inputs/RadioGroupInput/index";
-export { default as RichText } from "./components/inputs/RichText/index";
+export { RichText } from "./components/inputs/RichText/RichTextDynamic";
 export { default as SearchInput } from "./components/inputs/SearchInput/index";
 export { default as SelectInput } from "./components/inputs/SelectInput/index";
 export { default as SliderInput } from "./components/inputs/SliderInput/index";

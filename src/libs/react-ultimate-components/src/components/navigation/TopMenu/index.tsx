@@ -26,6 +26,12 @@ export interface TopMenuProps extends React.HTMLAttributes<HTMLElement> {
   itemClassName?: string;
   /** Classes para cada subitem do submenu */
   subItemClassName?: string;
+  /**
+   * Classes para o wrapper externo. Por padrão o menu só aparece a partir do
+   * breakpoint `md` (`hidden md:flex`). Use isto para exibi-lo no mobile, ex.:
+   * `wrapperClassName="flex"`.
+   */
+  wrapperClassName?: string;
 }
 
 interface SubMenuProps {
@@ -107,6 +113,7 @@ export default function TopMenu({
   className,
   itemClassName,
   subItemClassName,
+  wrapperClassName,
 }: TopMenuProps) {
   const router = useRouter();
   const handleNavigate =
@@ -120,7 +127,12 @@ export default function TopMenu({
     };
 
   return (
-    <div className="hidden md:flex w-full justify-center">
+    <div
+      className={clsx(
+        "w-full justify-center",
+        wrapperClassName ?? "hidden md:flex"
+      )}
+    >
       <nav
         aria-label="Menu principal"
         className={clsx(
@@ -128,7 +140,11 @@ export default function TopMenu({
           className
         )}
       >
-        <ul className={clsx("relative flex w-full flex-row list-none gap-6")}>
+        <ul
+          className={clsx(
+            "relative flex w-full flex-col md:flex-row list-none gap-2 md:gap-6"
+          )}
+        >
           {menuItems.map((item) => {
             const hasSubmenu = !!item.subItems?.length;
             return (

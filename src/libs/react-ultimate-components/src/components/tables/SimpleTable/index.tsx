@@ -49,6 +49,8 @@ export interface SimpleTableProps {
   currency?: Currency;
   /** Aplica estilo listrado (zebra) nas linhas (default: true) */
   stripped?: boolean;
+  /** Colunas que devem encolher para o tamanho do conteúdo (ex.: ["points"]) */
+  narrowColumns?: string[];
   /** Nomes das colunas que devem ser tratadas como monetárias (ex: ["price", "total"]). Se não fornecido, tenta detectar automaticamente. */
   moneyColumns?: string[];
   /** Classe CSS customizada para a tabela */
@@ -103,6 +105,7 @@ export default function SimpleTable({
   onFiltersChange,
   currency = "BRL",
   stripped = true,
+  narrowColumns,
   moneyColumns,
   tableClassName,
   headerClassName,
@@ -110,6 +113,10 @@ export default function SimpleTable({
   paginationClassName,
 }: SimpleTableProps) {
   const cols = useMemo(() => (data[0] ? Object.keys(data[0]) : []), [data]);
+  const narrowCols = useMemo(
+    () => new Set(narrowColumns ?? []),
+    [narrowColumns]
+  );
 
   // sort state (start with no key so it won't force "id")
   const [sort, setSort] = useState<Sort>({ key: null, dir: "asc" });
@@ -284,7 +291,10 @@ export default function SimpleTable({
                   <th
                     key={k}
                     className={clsx(
-                      "min-w-[160px] px-2 py-2 text-left text-xs sm:text-sm font-semibold",
+                      "px-2 py-2 text-left text-xs sm:text-sm font-semibold",
+                      narrowCols.has(k)
+                        ? "w-px whitespace-nowrap"
+                        : "min-w-[160px]",
                       "bg-background sticky top-0 border-b border-foreground/10",
                       headerClassName
                     )}
@@ -320,8 +330,9 @@ export default function SimpleTable({
                 <tr
                   key={ri}
                   className={clsx(
-                    "hover:bg-foreground/[0.04]",
-                    stripped && "odd:bg-foreground/[0.02]",
+                    "hover:bg-[color-mix(in_srgb,var(--color-foreground)_12%,transparent)]",
+                    stripped &&
+                      "odd:bg-[color-mix(in_srgb,var(--color-foreground)_7%,transparent)]",
                     !!onSeeItemDetails && "cursor-pointer"
                   )}
                   onClick={() => onSeeItemDetails?.(row)}
@@ -332,7 +343,13 @@ export default function SimpleTable({
                     const isMoney = moneyCols.has(k);
 
                     return (
-                      <td key={k} className="px-2 py-2 text-xs sm:text-sm">
+                      <td
+                        key={k}
+                        className={clsx(
+                          "px-2 py-2 text-xs sm:text-sm",
+                          narrowCols.has(k) && "w-px whitespace-nowrap"
+                        )}
+                      >
                         {isMoney
                           ? asNum == null
                             ? ""

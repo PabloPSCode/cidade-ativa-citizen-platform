@@ -1,7 +1,7 @@
 "use client";
 import { collapseLongString } from "../../../utils/format";
 import clsx from "clsx";
-import { forwardRef, useId, useMemo } from "react";
+import { forwardRef, useId, useMemo, type ReactNode } from "react";
 import Select, {
   type GroupBase,
   type Props as RSProps,
@@ -30,7 +30,7 @@ export interface SelectInputProps
     | "placeholder"
   > {
   /** Rótulo exibido acima do campo. */
-  label: string;
+  label: ReactNode;
   /** Lista de opções. */
   options: Option[];
   /** Callback ao selecionar uma opção. */
@@ -146,6 +146,10 @@ const SelectInput = forwardRef<SelectInstance<Option>, SelectInputProps>(
         borderRadius: 4,
         overflow: "hidden",
       }),
+      menuList: (base) => ({
+        ...base,
+        maxHeight: 200,
+      }),
       option: (base, state) => ({
         ...base,
         fontSize: "14px",
@@ -217,6 +221,7 @@ const SelectInput = forwardRef<SelectInstance<Option>, SelectInputProps>(
             classNamePrefix="wcbr-select"
             options={formattedOptions}
             styles={styles}
+            maxMenuHeight={200}
             isDisabled={isDisabled}
             isSearchable={isSearchable}
             placeholder={placeholder}
