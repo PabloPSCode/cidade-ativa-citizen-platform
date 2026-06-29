@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { GoogleButton } from "../../libs/react-ultimate-components/src";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import GoogleRegistrationModal from "./GoogleRegistrationModal";
 
@@ -19,13 +20,11 @@ interface PendingGoogleUser {
  */
 export default function GoogleSignInScreen() {
   const { loginWithGoogle } = useAuth();
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [pendingGoogleUser, setPendingGoogleUser] =
     useState<PendingGoogleUser | null>(null);
 
-  const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    try {
+  const { isLoading: isGoogleLoading, run: handleGoogleLogin } = useAsyncAction(
+    async () => {
       const result = await loginWithGoogle();
       if (result.status === "registration_required") {
         setPendingGoogleUser({
@@ -34,10 +33,8 @@ export default function GoogleSignInScreen() {
           photoUrl: result.photoUrl,
         });
       }
-    } finally {
-      setIsGoogleLoading(false);
     }
-  };
+  );
 
   return (
     <>

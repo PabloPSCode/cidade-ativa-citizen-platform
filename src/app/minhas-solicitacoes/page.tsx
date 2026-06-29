@@ -37,6 +37,7 @@ import {
     type SolicitationRecord,
     type SolicitationStatus,
 } from "../constants/solicitations";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import { useNeighborhoods } from "../hooks/useNeighborhoods";
 import { buildScopedHref } from "../lib/site-paths";
@@ -128,11 +129,9 @@ export default function MySolicitationsPage() {
   const [deleteTarget, setDeleteTarget] = useState<SolicitationRecord | null>(null);
   const [createdAtDate, setCreatedAtDate] = useState(new Date());
   const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
   const [isLookingUpCep, setIsLookingUpCep] = useState(false);
   // Último CEP (8 dígitos) consultado, para não repetir a busca a cada tecla.
   const lastQueriedCepRef = useRef("");
-  const [isDeleting, setIsDeleting] = useState(false);
   const [beforeUploadKey, setBeforeUploadKey] = useState(0);
   const [afterUploadKey, setAfterUploadKey] = useState(0);
 
@@ -238,6 +237,50 @@ export default function MySolicitationsPage() {
       setPage(totalPages);
     }
   }, [page, totalPages]);
+
+  const { isLoading: isSaving, run: handleSaveSolicitation } = useAsyncAction(
+    async () => {
+      if (!editDraft) return;
+
+      const updated = await updateSolicitation(editDraft.id, {
+        title: editDraft.title.trim(),
+        description: editDraft.description.trim(),
+        neighborhood: editDraft.neighborhood.trim(),
+        street: editDraft.street.trim(),
+        cep: editDraft.cep.trim(),
+        isCollective: editDraft.isCollective,
+      });
+
+      const updatedRecord = mapSolicitationDTOToRecord(updated);
+
+      setMySolicitations((currentItems) =>
+        currentItems.map((item) =>
+          item.id === editDraft.id
+            ? {
+                ...updatedRecord,
+                imageUrls: updatedRecord.imageUrls.slice(0, MAX_PHOTOS_PER_SECTION),
+                resolutionImageUrls: updatedRecord.resolutionImageUrls.slice(
+                  0,
+                  MAX_PHOTOS_PER_SECTION
+                ),
+              }
+            : item
+        )
+      );
+      handleCloseEditModal();
+    }
+  );
+
+  const { isLoading: isDeleting, run: handleConfirmDeleteSolicitation } =
+    useAsyncAction(async () => {
+      if (!deleteTarget) return;
+
+      await deleteSolicitation(deleteTarget.id);
+      setMySolicitations((currentItems) =>
+        currentItems.filter((item) => item.id !== deleteTarget.id)
+      );
+      handleCloseDeleteModal();
+    });
 
   if (!hasHydrated) {
     return (
@@ -427,57 +470,6 @@ export default function MySolicitationsPage() {
           }
         : currentDraft
     );
-  };
-
-  const handleSaveSolicitation = async () => {
-    if (!editDraft) return;
-
-    setIsSaving(true);
-    try {
-      const updated = await updateSolicitation(editDraft.id, {
-        title: editDraft.title.trim(),
-        description: editDraft.description.trim(),
-        neighborhood: editDraft.neighborhood.trim(),
-        street: editDraft.street.trim(),
-        cep: editDraft.cep.trim(),
-        isCollective: editDraft.isCollective,
-      });
-
-      const updatedRecord = mapSolicitationDTOToRecord(updated);
-
-      setMySolicitations((currentItems) =>
-        currentItems.map((item) =>
-          item.id === editDraft.id
-            ? {
-                ...updatedRecord,
-                imageUrls: updatedRecord.imageUrls.slice(0, MAX_PHOTOS_PER_SECTION),
-                resolutionImageUrls: updatedRecord.resolutionImageUrls.slice(
-                  0,
-                  MAX_PHOTOS_PER_SECTION
-                ),
-              }
-            : item
-        )
-      );
-      handleCloseEditModal();
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleConfirmDeleteSolicitation = async () => {
-    if (!deleteTarget) return;
-
-    setIsDeleting(true);
-    try {
-      await deleteSolicitation(deleteTarget.id);
-      setMySolicitations((currentItems) =>
-        currentItems.filter((item) => item.id !== deleteTarget.id)
-      );
-      handleCloseDeleteModal();
-    } finally {
-      setIsDeleting(false);
-    }
   };
 
   return (

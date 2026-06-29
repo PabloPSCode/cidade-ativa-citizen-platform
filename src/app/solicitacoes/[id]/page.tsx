@@ -32,6 +32,7 @@ import {
   mapSolicitationDTOToRecord,
   type SolicitationRecord,
 } from "../../constants/solicitations";
+import { useAsyncAction } from "../../hooks/useAsyncAction";
 import { useAuth } from "../../hooks/useAuth";
 import { buildScopedHref } from "../../lib/site-paths";
 
@@ -75,15 +76,11 @@ export default function SolicitationDetailsPage({
   const [signModalOpen, setSignModalOpen] = useState(false);
   const [registerFirstModalOpen, setRegisterFirstModalOpen] = useState(false);
   const [signaturesModalOpen, setSignaturesModalOpen] = useState(false);
-  const [isSigning, setIsSigning] = useState(false);
-  const [signError, setSignError] = useState<string | null>(null);
 
   const [solveModalOpen, setSolveModalOpen] = useState(false);
   const [solvedPhotos, setSolvedPhotos] = useState<PhotoPreview[]>([]);
   const [solvedCommentary, setSolvedCommentary] = useState("");
   const [isUploadingPhotos, setIsUploadingPhotos] = useState(false);
-  const [isSolving, setIsSolving] = useState(false);
-  const [solveError, setSolveError] = useState<string | null>(null);
   const [uploadKey, setUploadKey] = useState(0);
   const commentaryRef = useRef<HTMLTextAreaElement>(null);
 
@@ -139,6 +136,43 @@ export default function SolicitationDetailsPage({
     };
   }, [id, hasHydrated, authenticatedUser]);
 
+  const {
+    isLoading: isSigning,
+    error: signError,
+    run: handleConfirmSign,
+    setError: setSignError,
+  } = useAsyncAction(
+    async () => {
+      if (!authenticatedUser) return;
+      const created = await signSolicitation({
+        userId: authenticatedUser.userId,
+        solicitationId: id,
+      });
+      setSignatures((current) => [...current, created]);
+      setSignModalOpen(false);
+    },
+    { fallbackErrorMessage: "Erro ao assinar a solicitação. Tente novamente." }
+  );
+
+  const {
+    isLoading: isSolving,
+    error: solveError,
+    run: handleConfirmSolve,
+    setError: setSolveError,
+  } = useAsyncAction(
+    async () => {
+      if (solvedPhotos.length === 0) return;
+      const commentary = solvedCommentary.trim();
+      const dto = await solveSolicitation(id, {
+        solvedImageUrls: solvedPhotos.map((p) => p.uri),
+        ...(commentary ? { solvedCommentary: commentary } : {}),
+      });
+      setSolicitation(mapSolicitationDTOToRecord(dto));
+      setSolveModalOpen(false);
+    },
+    { fallbackErrorMessage: "Erro ao marcar como resolvida. Tente novamente." }
+  );
+
   if (!hasHydrated || isLoading) {
     return (
       <main className="min-h-screen bg-background text-foreground">
@@ -186,28 +220,6 @@ export default function SolicitationDetailsPage({
     setSignModalOpen(true);
   };
 
-  const handleConfirmSign = async () => {
-    if (!authenticatedUser) return;
-    setIsSigning(true);
-    setSignError(null);
-    try {
-      const created = await signSolicitation({
-        userId: authenticatedUser.userId,
-        solicitationId: id,
-      });
-      setSignatures((current) => [...current, created]);
-      setSignModalOpen(false);
-    } catch (error: unknown) {
-      setSignError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao assinar a solicitação. Tente novamente."
-      );
-    } finally {
-      setIsSigning(false);
-    }
-  };
-
   const handleOpenSolveModal = () => {
     setSolvedPhotos([]);
     setSolvedCommentary("");
@@ -235,29 +247,6 @@ export default function SolicitationDetailsPage({
 
   const handleRemovePhoto = (index: number) => {
     setSolvedPhotos((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const handleConfirmSolve = async () => {
-    if (solvedPhotos.length === 0) return;
-    setSolveError(null);
-    setIsSolving(true);
-    try {
-      const commentary = solvedCommentary.trim();
-      const dto = await solveSolicitation(id, {
-        solvedImageUrls: solvedPhotos.map((p) => p.uri),
-        ...(commentary ? { solvedCommentary: commentary } : {}),
-      });
-      setSolicitation(mapSolicitationDTOToRecord(dto));
-      setSolveModalOpen(false);
-    } catch (error: unknown) {
-      setSolveError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao marcar como resolvida. Tente novamente."
-      );
-    } finally {
-      setIsSolving(false);
-    }
   };
 
   const canConfirmSolve = solvedPhotos.length > 0 && !isUploadingPhotos && !isSolving;

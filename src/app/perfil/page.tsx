@@ -30,6 +30,7 @@ import {
   type UserResponseDTO,
 } from "../../services/users";
 import { isSolicitationOpen } from "../constants/solicitations";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import { buildScopedHref } from "../lib/site-paths";
 
@@ -60,10 +61,6 @@ export default function ProfilePage() {
   const [showRemoveAccount, setShowRemoveAccount] = useState(false);
 
   const [signaturePreview, setSignaturePreview] = useState("");
-  const [signatureError, setSignatureError] = useState("");
-  const [isSavingSignature, setIsSavingSignature] = useState(false);
-  const [isDeletingSignature, setIsDeletingSignature] = useState(false);
-  const [isRemovingAccount, setIsRemovingAccount] = useState(false);
 
   useEffect(() => {
     if (hasHydrated && !isAuthenticated) {
@@ -104,17 +101,14 @@ export default function ProfilePage() {
     };
   }, [authenticatedUser]);
 
-  const handleOpenRegisterSignature = () => {
-    setSignaturePreview("");
-    setSignatureError("");
-    setShowRegisterSignature(true);
-  };
-
-  const handleConfirmRegisterSignature = async () => {
-    if (!authenticatedUser || !signaturePreview) return;
-    setIsSavingSignature(true);
-    setSignatureError("");
-    try {
+  const {
+    isLoading: isSavingSignature,
+    error: signatureError,
+    run: handleConfirmRegisterSignature,
+    setError: setSignatureError,
+  } = useAsyncAction(
+    async () => {
+      if (!authenticatedUser || !signaturePreview) return;
       const created = await createSignature({
         imageUrl: signaturePreview,
         userName: authenticatedUser.name,
@@ -123,40 +117,31 @@ export default function ProfilePage() {
       setSignature(created);
       setSignaturePreview("");
       setShowRegisterSignature(false);
-    } catch (error) {
-      setSignatureError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao registrar a assinatura. Tente novamente."
-      );
-    } finally {
-      setIsSavingSignature(false);
-    }
+    },
+    { fallbackErrorMessage: "Erro ao registrar a assinatura. Tente novamente." }
+  );
+
+  const handleOpenRegisterSignature = () => {
+    setSignaturePreview("");
+    setSignatureError(null);
+    setShowRegisterSignature(true);
   };
 
-  const handleConfirmDeleteSignature = async () => {
-    if (!signature) return;
-    setIsDeletingSignature(true);
-    try {
+  const { isLoading: isDeletingSignature, run: handleConfirmDeleteSignature } =
+    useAsyncAction(async () => {
+      if (!signature) return;
       await deleteSignature(signature.id);
       setSignature(null);
       setShowDeleteSignature(false);
-    } finally {
-      setIsDeletingSignature(false);
-    }
-  };
+    });
 
-  const handleConfirmRemoveAccount = async () => {
-    if (!authenticatedUser) return;
-    setIsRemovingAccount(true);
-    try {
+  const { isLoading: isRemovingAccount, run: handleConfirmRemoveAccount } =
+    useAsyncAction(async () => {
+      if (!authenticatedUser) return;
       await deleteUser(authenticatedUser.userId);
       logout();
       router.replace(buildScopedHref(pathname, "/"));
-    } finally {
-      setIsRemovingAccount(false);
-    }
-  };
+    });
 
   if (!hasHydrated || (isAuthenticated && isLoading)) {
     return (
@@ -357,7 +342,7 @@ export default function ProfilePage() {
             height={200}
             onSave={(dataURL) => {
               setSignaturePreview(dataURL);
-              setSignatureError("");
+              setSignatureError(null);
             }}
             onClear={() => setSignaturePreview("")}
           />

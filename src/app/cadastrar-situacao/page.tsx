@@ -29,6 +29,7 @@ import {
 } from "../../services/solicitation-types";
 import { createSolicitation } from "../../services/solicitations";
 import { formatCep, isValidCep } from "../constants/solicitations";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import { useNeighborhoods } from "../hooks/useNeighborhoods";
 import { buildScopedHref } from "../lib/site-paths";
@@ -170,8 +171,6 @@ export default function RegisterSolicitationPage() {
   const [isLookingUpCep, setIsLookingUpCep] = useState(false);
   // Último CEP (8 dígitos) consultado, para evitar repetir a busca a cada tecla.
   const lastQueriedCepRef = useRef("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -345,18 +344,19 @@ export default function RegisterSolicitationPage() {
     setUploadError("");
   };
 
-  const handlePublish = async () => {
-    if (!isStepThreeValid) {
-      setUploadError("Selecione pelo menos uma imagem para publicar.");
-      return;
-    }
+  const {
+    isLoading: isSubmitting,
+    error: submitError,
+    run: handlePublish,
+  } = useAsyncAction(
+    async () => {
+      if (!isStepThreeValid) {
+        setUploadError("Selecione pelo menos uma imagem para publicar.");
+        return;
+      }
 
-    if (!authenticatedUser) return;
+      if (!authenticatedUser) return;
 
-    setIsSubmitting(true);
-    setSubmitError("");
-
-    try {
       await createSolicitation({
         title: form.title.trim(),
         description: form.description.trim(),
@@ -370,16 +370,9 @@ export default function RegisterSolicitationPage() {
       });
 
       router.push(backHref);
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao publicar solicitação. Tente novamente."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+    { fallbackErrorMessage: "Erro ao publicar solicitação. Tente novamente." }
+  );
 
   const StepIcon = currentStepData.icon;
 

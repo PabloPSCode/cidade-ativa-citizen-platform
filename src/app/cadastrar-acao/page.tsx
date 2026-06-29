@@ -23,6 +23,7 @@ import {
 } from "../../services/cool-actions";
 import { createDoneCoolAction } from "../../services/done-cool-actions";
 import { normalizeCategory } from "../constants/done-cool-actions";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import { useNeighborhoods } from "../hooks/useNeighborhoods";
 import { buildScopedHref } from "../lib/site-paths";
@@ -93,8 +94,6 @@ export default function RegisterCoolActionPage() {
   const [uploadKey, setUploadKey] = useState(0);
   const [uploadError, setUploadError] = useState("");
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState("");
 
   useEffect(() => {
     if (hasHydrated && !isAuthenticated) {
@@ -189,15 +188,16 @@ export default function RegisterCoolActionPage() {
     setUploadError("");
   };
 
-  const handleSubmit = async () => {
-    if (!authenticatedUser || !isStepOneValid || !isStepTwoValid || !photo) {
-      return;
-    }
+  const {
+    isLoading: isSubmitting,
+    error: submitError,
+    run: handleSubmit,
+  } = useAsyncAction(
+    async () => {
+      if (!authenticatedUser || !isStepOneValid || !isStepTwoValid || !photo) {
+        return;
+      }
 
-    setIsSubmitting(true);
-    setSubmitError("");
-
-    try {
       await createDoneCoolAction({
         userId: authenticatedUser.userId,
         coolActionId,
@@ -207,16 +207,9 @@ export default function RegisterCoolActionPage() {
         actionPhotoURL: photo.uri,
       });
       router.push(backHref);
-    } catch (error) {
-      setSubmitError(
-        error instanceof Error
-          ? error.message
-          : "Erro ao registrar ação. Tente novamente."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    },
+    { fallbackErrorMessage: "Erro ao registrar ação. Tente novamente." }
+  );
 
   if (!hasHydrated || !isAuthenticated) {
     return (

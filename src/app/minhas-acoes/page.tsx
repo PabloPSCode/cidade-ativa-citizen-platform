@@ -29,6 +29,7 @@ import {
   normalizeCategory,
   type DoneCoolActionRecord,
 } from "../constants/done-cool-actions";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import { buildScopedHref } from "../lib/site-paths";
 
@@ -81,12 +82,10 @@ export default function MyCoolActionsPage() {
   const [editPhoto, setEditPhoto] = useState<ActionPhotoPreview | null>(null);
   const [editUploadKey, setEditUploadKey] = useState(0);
   const [editUploadError, setEditUploadError] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
 
   const [deleteTarget, setDeleteTarget] = useState<DoneCoolActionRecord | null>(
     null
   );
-  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (hasHydrated && !isAuthenticated) {
@@ -240,53 +239,45 @@ export default function MyCoolActionsPage() {
       editStreet.trim() !== editTarget?.street ||
       editPhoto?.uri !== editTarget?.actionPhotoURL);
 
-  const handleSave = async () => {
+  const { isLoading: isSaving, run: handleSave } = useAsyncAction(async () => {
     if (!editTarget || !isEditFormValid || !editPhoto) return;
 
-    setIsSaving(true);
-    try {
-      await updateDoneCoolAction(editTarget.id, {
-        coolActionId: editCoolActionId,
-        description: editDescription.trim(),
-        neighborhood: editNeighborhood.trim(),
-        street: editStreet.trim(),
-        actionPhotoURL: editPhoto.uri,
-      });
+    await updateDoneCoolAction(editTarget.id, {
+      coolActionId: editCoolActionId,
+      description: editDescription.trim(),
+      neighborhood: editNeighborhood.trim(),
+      street: editStreet.trim(),
+      actionPhotoURL: editPhoto.uri,
+    });
 
-      const coolAction = coolActions.find(
-        (item) => item.id === editCoolActionId
-      );
+    const coolAction = coolActions.find((item) => item.id === editCoolActionId);
 
-      setRecords((current) =>
-        current.map((record) =>
-          record.id === editTarget.id
-            ? {
-                ...record,
-                coolActionId: editCoolActionId,
-                description: editDescription.trim(),
-                neighborhood: editNeighborhood.trim(),
-                street: editStreet.trim(),
-                actionPhotoURL: editPhoto.uri,
-                coolActionTitle: coolAction?.title ?? record.coolActionTitle,
-                category: coolAction
-                  ? normalizeCategory(coolAction.category)
-                  : record.category,
-                points: coolAction?.points ?? record.points,
-              }
-            : record
-        )
-      );
-      handleCloseEditModal();
-    } finally {
-      setIsSaving(false);
-    }
-  };
+    setRecords((current) =>
+      current.map((record) =>
+        record.id === editTarget.id
+          ? {
+              ...record,
+              coolActionId: editCoolActionId,
+              description: editDescription.trim(),
+              neighborhood: editNeighborhood.trim(),
+              street: editStreet.trim(),
+              actionPhotoURL: editPhoto.uri,
+              coolActionTitle: coolAction?.title ?? record.coolActionTitle,
+              category: coolAction
+                ? normalizeCategory(coolAction.category)
+                : record.category,
+              points: coolAction?.points ?? record.points,
+            }
+          : record
+      )
+    );
+    handleCloseEditModal();
+  });
 
-  const handleConfirmDelete = async () => {
-    if (!deleteTarget) return;
+  const { isLoading: isDeleting, run: handleConfirmDelete } = useAsyncAction(
+    async () => {
+      if (!deleteTarget) return;
 
-    setIsDeleting(true);
-    try {
       // Soft delete: o endpoint marca o registro como removido no back-end;
       // aqui apenas o retiramos da listagem visível.
       await deleteDoneCoolAction(deleteTarget.id);
@@ -294,10 +285,8 @@ export default function MyCoolActionsPage() {
         current.filter((record) => record.id !== deleteTarget.id)
       );
       setDeleteTarget(null);
-    } finally {
-      setIsDeleting(false);
     }
-  };
+  );
 
   if (!hasHydrated) {
     return (

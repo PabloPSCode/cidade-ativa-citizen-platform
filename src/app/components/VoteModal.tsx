@@ -10,6 +10,7 @@ import type { PollResponseDTO } from "../../services/polls";
 import { createVote } from "../../services/votes";
 import { listVotes } from "../../services/votes";
 import { createVoteOption, listVoteOptions } from "../../services/vote-options";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 
 interface VoteModalProps {
   poll: PollResponseDTO;
@@ -48,22 +49,48 @@ export default function VoteModal({
   const [options, setOptions] = useState<string[]>([]);
   const [isLoadingOptions, setIsLoadingOptions] = useState(true);
   const [selectedOption, setSelectedOption] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
+
+  const {
+    isLoading: isSubmitting,
+    error: submitError,
+    run: handleConfirm,
+  } = useAsyncAction(
+    async () => {
+      if (!selectedOption) return;
+
+      const vote = await createVote({
+        title: poll.title,
+        description: poll.description,
+        pollId: poll.id,
+        userId,
+      });
+      await createVoteOption({ optionText: selectedOption, voteId: vote.id });
+      onVoted(poll.id);
+      onClose();
+    },
+    {
+      fallbackErrorMessage:
+        "Não foi possível registrar o seu voto. Tente novamente.",
+    }
+  );
+
+  // Erro exibido na modal: prioriza o erro de envio, com fallback no de carga.
+  const error = submitError ?? loadError;
 
   useEffect(() => {
     let cancelled = false;
 
     async function loadOptions() {
       setIsLoadingOptions(true);
-      setError("");
+      setLoadError("");
       try {
         const result = await fetchPollOptions(poll.id);
         if (!cancelled) setOptions(result);
       } catch {
         if (!cancelled) {
           setOptions([]);
-          setError("Não foi possível carregar as opções desta enquete.");
+          setLoadError("Não foi possível carregar as opções desta enquete.");
         }
       } finally {
         if (!cancelled) setIsLoadingOptions(false);
@@ -75,32 +102,6 @@ export default function VoteModal({
       cancelled = true;
     };
   }, [poll.id]);
-
-  const handleConfirm = async () => {
-    if (!selectedOption) return;
-
-    setIsSubmitting(true);
-    setError("");
-    try {
-      const vote = await createVote({
-        title: poll.title,
-        description: poll.description,
-        pollId: poll.id,
-        userId,
-      });
-      await createVoteOption({ optionText: selectedOption, voteId: vote.id });
-      onVoted(poll.id);
-      onClose();
-    } catch (submitError) {
-      setError(
-        submitError instanceof Error
-          ? submitError.message
-          : "Não foi possível registrar o seu voto. Tente novamente."
-      );
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   const radioOptions = options.map((optionText) => ({
     label: optionText,

@@ -15,6 +15,7 @@ import {
   ModalsGenericModal as GenericModal,
   TopMenu,
 } from "../../libs/react-ultimate-components/src";
+import { useAsyncAction } from "../hooks/useAsyncAction";
 import { useAuth } from "../hooks/useAuth";
 import { buildScopedHref } from "../lib/site-paths";
 import GoogleRegistrationModal from "./GoogleRegistrationModal";
@@ -31,7 +32,6 @@ export default function Header() {
   const { authenticatedUser, hasHydrated, isAuthenticated, loginWithGoogle, logout } =
     useAuth();
 
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [pendingGoogleUser, setPendingGoogleUser] = useState<PendingGoogleUser | null>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -87,9 +87,8 @@ export default function Header() {
     },
   ];
 
-  const handleGoogleLogin = async () => {
-    setIsGoogleLoading(true);
-    try {
+  const { isLoading: isGoogleLoading, run: handleGoogleLogin } = useAsyncAction(
+    async () => {
       const result = await loginWithGoogle();
       if (result.status === "registration_required") {
         setPendingGoogleUser({
@@ -98,10 +97,8 @@ export default function Header() {
           photoUrl: result.photoUrl,
         });
       }
-    } finally {
-      setIsGoogleLoading(false);
     }
-  };
+  );
 
   const handleLogout = () => {
     logout();
