@@ -55,8 +55,17 @@ function readTokenFromCookie(): string | null {
 
 const isDev = process.env.NODE_ENV === 'development';
 
+// No servidor (Server Components), fala direto com o backend pela URL interna
+// `API_URL`, que NÃO é exposta ao browser. No client, as requisições passam
+// pelo proxy de mesma origem `/api/backend/*` (ver `rewrites` no next.config.js),
+// de modo que a URL real do backend nunca chega ao bundle do navegador.
+const baseURL =
+  typeof window === 'undefined'
+    ? process.env.API_URL ?? 'http://localhost:3337'
+    : '/api/backend';
+
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3337',
+  baseURL,
   headers: { 'Content-Type': 'application/json' },
 });
 

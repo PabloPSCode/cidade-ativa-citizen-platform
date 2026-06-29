@@ -23,6 +23,17 @@ const nextConfig = {
       },
     ],
   },
+  // Proxy reverso para o backend. O browser fala apenas com `/api/backend/*`
+  // (mesma origem) e o Next encaminha para a URL real, lida do env server-only
+  // `API_URL`. Assim a URL do backend nunca é embutida no bundle do client.
+  async rewrites() {
+    return [
+      {
+        source: "/api/backend/:path*",
+        destination: `${process.env.API_URL ?? "http://localhost:3337"}/:path*`,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
