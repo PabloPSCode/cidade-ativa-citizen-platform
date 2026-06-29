@@ -89,7 +89,6 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 });
 
 api.interceptors.response.use(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (response): any => {
     if (isDev) {
       console.log('[RESPONSE SUCCESS]', {
