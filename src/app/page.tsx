@@ -242,7 +242,7 @@ export default function Home() {
             alt="Loading"
             width={100}
             height={100}
-            className="h-12 w-auto"
+            className="h-16 w-auto"
           />
           <p className="text-sm text-foreground/65">Carregando...</p>
         </div>
